@@ -1,0 +1,25 @@
+<div class="{{ class }}">
+
+  {%- form 'customer', id: id -%}
+
+    {%- render 'form-errors', form: form -%}
+
+    {%- if form.posted_successfully? -%}
+
+      <span class="alert body-text-sm alert--success">{{ 'general.newsletter.confirmation' | t }}</span>
+
+    {%- else -%}
+      
+      <div>
+        <input type="hidden" name="contact[tags]" value="newsletter">
+        <input type="email" class="newsletter__input" value="{% if customer %}{{ customer.email }}{% endif %}" placeholder="{{ 'general.newsletter.email_label' | t }}" name="contact[email]" id="Email-{{ id }}" aria-label="{{ 'general.newsletter.email_label' | t }}" autocorrect="off" autocapitalize="off">
+        <button type="submit" class="newsletter__submit" id="Subscribe-{{ id }}" aria-label="{{ 'general.newsletter.submit_label' | t }}">
+          <span aria-hidden="true">{%- render 'theme-symbols', icon: 'arrow-long' -%}</span>
+        </button>
+      </div>
+
+    {%- endif -%}
+
+  {%- endform -%}
+
+</div>

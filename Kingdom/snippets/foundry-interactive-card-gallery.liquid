@@ -1,0 +1,270 @@
+{% if product.metafields.foundry.product_elements != blank %}
+<style>
+   /* Style for the main Elements gallery */
+  .elements-container .elements {
+    margin-top: 0px;
+  }
+
+  .elements-container .elements-header {
+    font-size: 38px;
+    margin-top: 0px;
+    font-weight: bold;
+    margin-bottom: 3px;
+  }
+
+  .elements-container .element-scroll-container {
+    display: flex;
+    overflow-x: scroll;
+  }
+
+  .elements-container .element-scroll-container .elements {
+    display: flex;
+    flex-shrink: 0;
+    align-items: stretch;
+  }
+
+  .elements-container .elements .element {
+    display: flex;
+    align-items: center;
+    border: 1px solid #EBEBEB;
+    border-radius: 3px;
+    padding: 16px 10px;
+    margin: 8px;
+    flex-direction: column;
+    width: 220px;
+  }
+
+  .elements-container .elements .element img {
+    max-width: 80%;
+    height: 190px;
+    object-fit: contain;
+  }
+
+  .elements-container .see-all-btn {
+    font-family: Montserrat, sans-serif;
+    font-size: 18px;
+    text-align: left;
+    width: 100%;
+    border-bottom: 1px solid #000;
+  }
+
+  .elements-container .elements h3 {
+    font-size: 18px;
+    margin-top: 0;
+    margin-bottom: 1px;
+    line-height: 26px;
+    text-transform: uppercase;
+  }
+
+  .elements-container .elements img {
+    max-width: 80%;
+    height: 190px;
+    object-fit: contain;
+  }
+
+  .elements-container .elements p {
+    font-size: 13px;
+    line-height: 20px;
+    margin-bottom: 0;
+  }
+
+  @media screen and (max-width: 600px) {
+    .elements-container .elements .element {
+      flex-direction: column;
+      margin-right: 0px;
+    }
+  }
+
+
+  /* Style for the Modal */
+
+  .elements-modal-content .micromodal-slide.is-open {
+    display: block;
+    z-index: 99;
+    position: relative;
+    width: 1000px;
+    height: 80vh;
+  }
+
+  .elements-modal-content .modal__overlay {
+    position: fixed;
+    top: 50%;
+    left: 50%;
+    transform: translate(-50%, -50%);
+    width: 100%;
+    background: rgba(0, 0, 0, 0.6);
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    z-index: 99;
+    display: flex;
+    flex-direction: column;
+  }
+
+  .elements-modal-content .modal__container {
+    background-color: #fff;
+    padding: 30px;
+    width: 100%;
+    max-height: 100vh;
+    border-radius: 4px;
+    overflow-y: auto;
+    box-sizing: border-box;
+    display: block;
+    height: 100%;
+  }
+
+  .elements-modal-content .elements {
+    display: flex;
+    flex-direction: row;
+    justify-content: flex-start;
+    overflow: scroll;
+    align-items: stretch;
+  }
+
+  .elements-modal-content .element {
+    margin: 20px;
+    border: 1px solid #dedede;
+    padding: 20px;
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    align-items: center;
+    width: 270px;
+    flex-shrink: 0;
+  }
+
+  .elements-modal-content .element img {
+    height: 180px;
+    width: auto;
+    margin-bottom: 15px;
+  }
+
+  .elements-modal-content .modal__header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+  }
+
+  .elements-modal-content .modal__title {
+    text-transform: uppercase;
+    font-size: 40px;
+    margin-top: 0;
+    margin-bottom: 0;
+    margin-left: auto;
+    margin-right: auto;
+    font-weight: 600;
+    line-height: 40px;
+    box-sizing: border-box;
+    border-bottom: 5px solid;
+  }
+
+  .elements-modal-content .modal__close {
+    background: transparent;
+    border: 0;
+  }
+
+  .elements-modal-content .modal__header .modal__close:before {
+    content: "\2715";
+    font-size: 30px;
+  }
+
+  .elements-modal-content .modal__content {
+    margin-top: 1rem;
+    margin-bottom: 2rem;
+    line-height: 1.5;
+    color: rgba(0, 0, 0, .8);
+    font-size: 14px;
+  }
+
+  .elements-modal-content .elements-modal .elements .element {
+    flex-direction: column;
+    margin: 0px 10px;
+  }
+
+  .elements-modal-content .elements-modal .elements img {
+    max-width: 80%;
+    max-height: unset;
+    height: 180px;
+    margin-right: 4px;
+    object-fit: contain;
+  }
+
+  .elements-modal-content .element-list {
+    color: #fff;
+    background: #000;
+    padding: 20px;
+  }
+
+  @media screen and (max-width: 600px) {
+    .elements-modal-content .elements-modal .modal__container {
+      padding: 30px 0px;
+    }
+  }
+</style>
+
+
+{% comment %}
+  <div class="elements-container"> would be the main Product elements block in `main-product.liquid` section for PDPs.
+{% endcomment %}
+  <div class="elements-container">
+    <p class="elements-header">{{ block_settings.gallery_heading  }}</p>
+    <button id="elementsModalButton" class="see-all-btn">{{ block_settings.see_all_btn-text  }}</button>
+
+    <div class="element-scroll-container">
+      <div class="elements">
+        {% for element in product.metafields.foundry.product_elements.value %}
+          <div class="element">
+            <img src="{{ element.image | image_url: width: 300 }}" class="element-img" />
+            <div class="content">
+              <h3>{{ element.title }}</h3>
+              <p>{{ element.description }}</p>
+            </div>
+          </div>
+        {% endfor %}
+      </div>
+    </div>
+  </div>
+
+  {% comment %}
+    <div id="modal-foundry-snippet" would be the Pop-up modal that gets shown when "elementsModalButton" gets clicked
+  {% endcomment %}
+  <div id="modal-foundry-snippet" style="display:none">
+    <div class="elements-modal-content">
+      <div class="modal micromodal-slide elements-modal" aria-hidden="true">
+        <div class="modal__overlay" tabindex="-1" data-micromodal-close>
+          <div class="modal__container" role="dialog" aria-modal="true" aria-labelledby="modal-1-title">
+            <header class="modal__header">
+              <h2 class="modal__title" id="modal-1-title">
+                {{ block_settings.elements_modal-title-text  }}
+              </h2>
+              <button class="modal__close" aria-label="Close modal" data-micromodal-close></button>
+            </header>
+            <main class="modal__content" id="modal-1-content">
+              <div class="elements">
+                {% for element in product.metafields.foundry.product_elements.value %}
+                <div class="element">
+                  <img src="{{ element.image | image_url: width: 300 }}" />
+                  <div class="content">
+                    <h3>{{ element.title }}</h3>
+                    <p>{{ element.description }}</p>
+                  </div>
+                </div>
+                {% endfor %}
+              </div>
+            </main>
+          </div>
+          <div class="element-list" style=""><strong style="display: block; margin-bottom: 8px;">{{ product.metafields.foundry.all_elements.value }} </div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <script type="module">
+    import { initializeModal } from 'foundry_utility_helpers';
+
+    document.addEventListener('DOMContentLoaded', () => {
+      initializeModal('#elementsModalButton', '#modal-foundry-snippet');
+    });
+  </script>
+
+  {% endif %}

@@ -1,0 +1,186 @@
+<div class="content-section gutter--on">
+	
+  {%- unless section.settings.title == blank -%}
+    <{{ section.settings.seo_h_tag }} class="h1">{{ section.settings.title | escape }}</{{ section.settings.seo_h_tag }}>
+  {%- endunless -%}
+
+	{%- assign form_id = section.id | prepend: 'form-' -%}
+	{%- form 'contact', id: form_id, class: 'simple-form' -%}
+
+		{%- if form.posted_successfully? -%}
+			<p class="alert body-text-sm alert--success">{{ 'general.contact_form.success_message' | t }}</p>
+		{%- endif -%}
+
+		{%- render 'form-errors', form: form -%}
+
+		{%- for block in section.blocks -%}
+
+			<div class="simple-form-field simple-form-field__{{ block.type }}" {{ block.shopify_attributes }}>
+
+				{%- case block.type -%}
+
+					{%- when 'email' -%}
+						<div class="simple-form-grid">
+							<div>
+								<label for="contactFormName" class="visually-hidden">{{ 'general.contact_form.name_label' | t }}</label>
+								<input type="text" id="contactFormName" name="contact[name]" placeholder="{{ 'general.contact_form.name_label' | t }}" autocapitalize="words" required value="{% if form.name %}{{ form.name }}{% elsif customer %}{{ customer.name }}{% endif %}">
+							</div>
+							<div>
+								<label for="contactFormEmail" class="visually-hidden">{{ 'general.contact_form.email_label' | t }}</label>
+								<input type="email" id="contactFormEmail" name="contact[email]" placeholder="{{ 'general.contact_form.email_label' | t }}" autocorrect="off" autocapitalize="off" required value="{% if form.email %}{{ form.email }}{% elsif customer %}{{ customer.email }}{% endif %}">
+							</div>
+						</div>
+
+					{%- when 'button' -%}
+						<button type="submit" class="button button--solid">{{ block.settings.label | escape }}</button>
+
+					{%- when 'field' -%}
+						{%- assign id = block.id | prepend: 'field' -%}
+						<label for="{{ id }}" class="visually-hidden">{{ block.settings.label | escape }}</label>
+						{%- if block.settings.type == 'input' -%}
+							<input type="text"
+						{%- else -%}
+							<textarea rows="10"
+						{%- endif -%}
+								id="{{ id }}" name="contact[{{ block.settings.label | handleize }}]" 
+								placeholder="{{ block.settings.label | escape }}" 
+								autocorrect="off" autocapitalize="off" autocomplete="off" 
+								{% if block.settings.required %} required {% endif %}
+							>
+						{%- if block.settings.type == 'textarea' -%}
+							</textarea>
+						{%- endif -%}
+
+				{%- endcase -%}
+
+			</div>
+
+		{%- endfor -%}
+
+	{%- endform -%}
+
+</div>
+
+{% schema %}
+{
+  "name": "t:sections.contact-form.name",
+  "class": "centered-section-content with-gutter",
+  "tag": "section",
+  "max_blocks": 12,
+  "settings": [
+    {
+      "type": "text",
+      "id": "title",
+      "label": "t:sections.faq.settings.title.label",
+      "default": "Drop us a line"
+    },
+    {
+      "type": "header",
+      "content": "t:sections.refactor_words.seo.name"
+    },
+    {
+      "type": "select",
+      "id": "seo_h_tag",
+      "label": "t:sections.refactor_words.seo.label",
+      "info": "t:sections.refactor_words.seo.info",
+      "options": [
+        {
+          "value": "h1",
+          "label": "H1"
+        },
+        {
+          "value": "h2",
+          "label": "H2"
+        },
+        {
+          "value": "h3",
+          "label": "H3"
+        },
+        {
+          "value": "h4",
+          "label": "H4"
+        },
+        {
+          "value": "span",
+          "label": "span"
+        }
+      ],
+      "default": "h3"
+    }
+  ],
+  "blocks": [
+  	{
+  		"type": "field",
+  		"name": "t:sections.contact-form.blocks.field.name",
+  		"settings": [
+  			{
+  				"type": "text",
+  				"id": "label",
+  				"label": "t:sections.contact-form.blocks.field.settings.labels.label",
+  				"info": "t:sections.contact-form.blocks.field.settings.labels.info",
+  				"default": "Label"
+  			},
+  			{
+  				"type": "select",
+  				"id": "type",
+  				"label": "t:sections.contact-form.blocks.field.settings.type.label",
+  				"options": [
+						{
+							"value": "input",
+							"label": "t:sections.contact-form.blocks.field.settings.type.options__1.label"
+						},
+						{
+							"value": "textarea",
+							"label": "t:sections.contact-form.blocks.field.settings.type.options__2.label"
+						}
+					],
+					"default": "input"
+				},
+				{
+					"type": "checkbox",
+					"id": "required",
+					"label": "t:sections.contact-form.blocks.field.settings.required_field.label"
+				}
+  		]
+  	},
+  	{
+  		"type": "email",
+  		"name": "t:sections.contact-form.blocks.email.name",
+  		"limit": 1
+  	},
+  	{
+  		"type": "button",
+  		"name": "t:sections.contact-form.blocks.button.name",
+  		"limit": 1,
+  		"settings": [
+  			{
+  				"type": "text",
+  				"id": "label",
+  				"label": "t:sections.contact-form.blocks.button.settings.label.label",
+  				"default": "Submit"
+  			}
+  		]
+  	}
+  ],
+  "presets": [
+    {
+      "name": "t:sections.contact-form.presets.name",
+      "blocks": [
+      	{
+      		"type": "email"
+      	},
+      	{
+      		"type": "field",
+      		"settings": {
+      			"label": "Message",
+      			"type": "textarea"
+      		}
+      	},
+      	{
+      		"type": "button"
+      	}
+      ]
+    }
+  ]
+}
+{% endschema %}

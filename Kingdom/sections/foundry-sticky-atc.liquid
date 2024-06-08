@@ -1,0 +1,141 @@
+{% if settings.enable_sticky_cart_atc %}
+<style>
+  .sticky-add-to-cart-container {
+    position: fixed;
+    bottom: 0;
+    right: 0;
+    background-color: white;
+    padding: 15px;
+    box-shadow: 0 -2px 4px rgba(0, 0, 0, 0.1);
+    z-index: 1000;
+    text-align: right;
+    width: 100%;
+    z-index: 600;
+    visibility: hidden;
+    opacity: 0;
+    transition: visibility 0s linear 0.5s, opacity 0.5s linear;
+  }
+
+  .sticky-add-to-cart-container.visible {
+    visibility: visible;
+    opacity: 1;
+    transition: opacity 0.5s linear;
+  }
+
+  .sticky-add-to-cart-container .product__form.sticky-add-to-cart {
+    margin-bottom: 0;
+  }
+
+  .sticky-add-to-cart-container .product__add-to-cart {
+    width: 300px;
+    font-size: 18px;
+  }
+
+  .sticky-add-to-cart-container .sticky-add-to-cart-wrapper {
+    display: flex;
+    flex-direction: row;
+    justify-content: space-between;
+    align-items: center;
+  }
+
+  .sticky-add-to-cart-inner-wrapper {
+    width: 100%;
+    display: flex;
+    flex-direction: row;
+    justify-content: space-between;
+    align-items: center;
+  }
+
+  .sticky-add-to-cart-container .sticky-add-to-cart-wrapper::before {
+    content: "";
+    display: block;
+    position: relative;
+    width: 20%;
+    min-width: 240px;
+    max-width: 360px;
+    z-index: -10;
+    flex-shrink: 0;
+}
+
+  @media screen and (max-width: 950px) {
+    .sticky-add-to-cart-container {
+      width: 100%;
+      padding: 10px;
+    }
+
+    .sticky-add-to-cart-container .sticky-add-to-cart-wrapper {
+      justify-content: center;
+    }
+
+    .sticky-add-to-cart-container .sticky-add-to-cart-wrapper img {
+      display: none;
+    }
+
+    .sticky-add-to-cart-container .product__add-to-cart {
+      width: 100%;
+    }
+    .sticky-add-to-cart-container .product__form.sticky-add-to-cart {
+      width: 100%;
+    }
+    .sticky-add-to-cart-container .sticky-add-to-cart-wrapper::before {
+      display: none;
+    }
+  }
+</style>
+
+{% assign current_variant = product.selected_or_first_available_variant %}
+
+<div class="sticky-add-to-cart-container">
+  <div class="sticky-add-to-cart-wrapper">
+    <div class="sticky-add-to-cart-inner-wrapper">
+      <img src="{{ product.featured_image | image_url: height: 70 }}" />
+      <product-form id="sticky-add-to-cart" class="product__form sticky-add-to-cart" data-ajax-cart>
+        <form method="post" action="/cart/add">
+          <input type="hidden" name="id" value="{{ current_variant.id }}">
+          <button type="submit" name="add" class="product__add-to-cart button {% unless current_variant.available %} disabled {% endunless %}">
+            <span class="add-to-cart__text">{{ 'products.page.add_to_cart_button' | t }}</span>
+            <span class="add-to-cart__symbol" aria-hidden="true">{%- render 'theme-symbols', icon: 'cart' -%}</span>
+            <span class="add-to-cart__preloader" aria-hidden="true"></span>
+          </button>
+        </form>
+      </product-form>
+    </div>
+  </div>
+</div>
+
+<!-- Your existing script -->
+
+<script type="module">
+  import { openMiniCart } from 'foundry_utility_helpers';
+  document.addEventListener('DOMContentLoaded', () => {
+    const stickyContainer = document.querySelector('.sticky-add-to-cart-container');
+    const originalButton = document.querySelector('.product__cart-functions .flex-buttons .product__add-to-cart');
+    
+    const handleStickyContainerVisibility = () => {
+      const originalButtonRect = originalButton.getBoundingClientRect();
+      const isOriginalButtonVisible = originalButtonRect.top < window.innerHeight && originalButtonRect.bottom >= 0;
+
+      if (!isOriginalButtonVisible) {
+        stickyContainer.classList.add('visible');
+      } else {
+        stickyContainer.classList.remove('visible');
+      }
+    }
+
+    const stickyButtonForm = document.querySelector('#sticky-add-to-cart')      
+    stickyButtonForm.addEventListener('add-to-cart', openMiniCart)
+
+    window.addEventListener('scroll', handleStickyContainerVisibility);
+    handleStickyContainerVisibility();
+  });
+</script>
+
+{% endif %}
+
+{% schema %}
+  {
+    "name": "Sticky Add to Cart",
+    "class": "sticky-atc",
+    "settings": []
+  }
+{% endschema %}

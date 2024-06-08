@@ -1,0 +1,128 @@
+modal-box {
+  position: fixed;
+  width: 100%;
+  height: 100%;
+  top: 0;
+  left: 0;
+  z-index: -1;
+  background: rgba(0, 0, 0, 0.7);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  opacity: 0;
+  visibility: hidden;
+  transition: all 250ms linear;
+}
+modal-box.active {
+  z-index: 9999;
+  opacity: 1;
+  visibility: visible;
+}
+
+.popup-background,
+.modal-background {
+  position: absolute;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  z-index: 1;
+}
+
+.popup-content {
+  align-items: center;
+  display: flex;
+  flex-direction: column;
+  position: relative;
+  max-width: 620px;
+  width: 100%;
+  top: 0;
+  left: 0;
+  background: rgba(var(--color-body-bg), 1);
+  color: rgba(var(--color-body-txt), 1);
+  transform: translateY(50px);
+  opacity: 0;
+  transition: all 300ms linear 50ms;
+  z-index: 9;
+  overflow: hidden;
+}
+modal-box.active .popup-content {
+  opacity: 1;
+  transform: translateY(0);
+}
+
+.popup-form {
+  position: relative;
+  margin-top: 25px;
+}
+.popup-form input[type=email] {
+  border-color: rgba(var(--color-body-txt), 0.36) !important;
+}
+.popup-form input[type=email]:hover {
+  border-color: rgba(var(--color-body-txt), 0.66) !important;
+}
+.popup-form input[type=email]:focus {
+  border-color: rgba(var(--color-body-txt), 0.96) !important;
+}
+
+.popup-close {
+  position: absolute;
+  top: 0;
+  z-index: 999;
+  cursor: pointer;
+}
+html[dir=rtl] .popup-close {
+  left: 0;
+}
+html[dir=ltr] .popup-close {
+  right: 0;
+}
+
+.popup-image {
+  padding-top: 32.3%;
+  width: 100%;
+  height: 0;
+  position: relative;
+}
+
+.popup-text {
+  padding: 50px;
+  width: 100%;
+}
+.popup-text .rte {
+  opacity: 0.66;
+}
+
+.popup-title {
+  line-height: 1.15;
+}
+.popup-title + .rte {
+  margin-top: 25px;
+}
+
+.popup-content .footer-content {
+  margin-top: 35px;
+}
+
+.popup-cta-block {
+  display: flex;
+  flex-wrap: wrap;
+  margin-top: 35px;
+  gap: 15px;
+  justify-content: center;
+}
+
+@media screen and (max-width: 948px) {
+  modal-box {
+    align-items: flex-end;
+  }
+  .popup-content {
+    max-width: 100%;
+  }
+  .popup-text {
+    padding: 25px;
+  }
+  .popup-image {
+    display: none;
+  }
+}

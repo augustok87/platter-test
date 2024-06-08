@@ -1,0 +1,63 @@
+<div class="collection-item" {{ shopify_attributes }}>
+
+	<a class="collection-item__link" href="{{ collection.url | escape }}" title="{{ collection.title | escape }}">
+
+		<div class="collection-item__header {% unless text_alignment == blank %} {{ text_alignment }} {% else %} horizontal-left vertical-top {% endunless %}">
+
+			<h3 class="collection-item__title h1">
+				<span>
+					{%- liquid
+						unless collection.title == blank
+							echo collection.title | escape
+						else
+							echo 'general.onboarding.collection_title' | t
+						endunless
+					-%}
+				</span>
+			</h3>
+
+		</div>
+
+		<div class="collection-item__background">
+
+			{%- liquid
+
+				unless image == blank
+					assign collection_image = image
+					assign image_alignment = true
+				else
+					assign collection_image = collection.featured_image
+					assign image_alignment = false
+				endunless
+
+				assign modulo = index | modulo: 2
+				if layout == 'layout-fulls'
+					assign sizes = 'sizes="(max-width: 768px) calc(100vw - 20px), (min-width: 769px) and (max-width: 948px) 100vw, calc(100vw - 300px)"'
+				elsif layout == 'layout-halves' and modulo == 0 and last
+					assign sizes = 'sizes="(max-width: 768px) calc(100vw - 20px), (min-width: 769px) and (max-width: 948px) 100vw, calc(100vw - 300px)"'
+				else
+					assign sizes = 'sizes="(max-width: 768px) calc(100vw - 20px), (min-width: 769px) and (max-width: 948px) 50vw, calc((100vw - 300px) / 2)"'
+				endif
+
+				if section.index == 1 and index <= 3
+					assign preload = true
+				else
+					assign preload = false
+				endif
+
+			-%}
+
+			{%- unless collection_image == blank %}
+				{%- render 'lazy-image', image: collection_image, type: 'background', image_alignment: image_alignment, alt: collection.title, sizes: sizes, preload: preload -%}
+			{%- else -%}
+				<span class="onboarding-svg">
+	   			{%- assign no = index | modulo: 6 | plus: 1 -%}
+			    {{ 'collection-X' | replace: 'X', no | placeholder_svg_tag }}
+			  </span>
+			{%- endunless -%}
+
+		</div>
+
+	</a>
+
+</div>

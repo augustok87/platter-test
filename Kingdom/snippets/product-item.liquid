@@ -1,0 +1,192 @@
+{%- liquid
+	
+	assign grid_style = settings.grid_style
+	assign grid_aspect = settings.grid_aspect
+	assign grid_enhance = settings.grid_enhance_featured_product
+	assign grid_show_secondary_image = settings.grid_show_secondary_image
+	assign grid_discount = settings.grid_discount
+
+	assign on_sale = false
+	if product.compare_at_price > product.price
+		assign on_sale = true
+	endif
+
+	assign sold_out = true
+	if product.available 
+		assign sold_out = false
+	endif
+
+	if grid_aspect == 'natural'
+		if product.media.size == 0 or blank_product
+			assign aspect_ratio = 1
+		else
+			unless product.featured_media.aspect_ratio > 0
+				assign aspect_ratio = 1
+			else
+				assign aspect_ratio = product.featured_media.aspect_ratio
+			endunless
+		endif
+	else
+		assign aspect_ratio = grid_aspect
+	endif
+
+	assign media_sizes = 'sizes="(max-width: 768px) calc(50vw - 20px), (min-width: 768px) and (max-width: 948px) 25vw, (min-width: 948px) and (max-width: 1174px) calc((100vw - 200px)/2), calc((100vw - 300px)/4)"'
+	if product.tags contains 'featured' and grid_enhance == true and template != 'search'
+		assign media_sizes = 'sizes="(max-width: 768px) calc(100vw - 20px), (min-width: 768px) and (max-width: 948px) 50vw, (min-width: 948px) and (max-width: 1174px) calc(100vw - 200px), calc((100vw - 300px)/2)"'
+	endif
+	
+	if settings.within_filter_enabled and product_collection
+		assign product_url = product.url | within: product_collection
+	else
+		assign product_url = product.url
+	endif
+
+-%}
+
+<div class="product-item {% if product.tags contains 'featured' and grid_enhance == true and template != 'search' and blank_product != true %} featured {% endif %}" data-js-product-item>
+
+	<a href="{{ product_url }}" class="product-item__link">
+
+		{%- if blank_product or product.media.size == 0 -%} 
+
+	  	<span class="product-item__thumbnail onboarding-svg onboarding-background" style="padding-top:100%" data-padding="{{ 100 }}">
+   			{% assign no = index | modulo: 6 | plus: 1 %}
+		    {{ 'product-X' | replace: 'X', no | placeholder_svg_tag }}
+		   </span>
+
+		{%- else -%}
+
+			<div class="product-item__thumbnail" style="padding-top:{{ 100 | divided_by: aspect_ratio }}%" data-padding="{{ 100 | divided_by: aspect_ratio }}">
+				
+				{%- liquid
+					if grid_aspect == 'natural'
+						render 'lazy-image', image: product.featured_media, type: 'background', alt: product.title, sizes: media_sizes, preload: preload
+					else 
+						render 'lazy-image', image: product.featured_media, type: 'background', ratio: aspect_ratio, alt: product.title, sizes: media_sizes, preload: preload
+					endif
+				-%}
+
+		  	{%- if grid_show_secondary_image and product.media.size >= 2 -%}
+
+					<div class="product-item__secondary-image">
+						{%- liquid
+							if grid_aspect == 'natural'
+								render 'lazy-image', image: product.media[1], type: 'background', alt: product.title, sizes: media_sizes
+							else 
+								render 'lazy-image', image: product.media[1], type: 'background', ratio: aspect_ratio, alt: product.title, sizes: media_sizes
+							endif
+						-%}
+					</div>
+
+		  	{%- endif -%}
+
+				{%- liquid
+					if settings.enable_quick_buy
+						render 'quick-buy', product: product, id: index
+					endif
+				-%}
+
+		  </div>
+
+		{%- endif -%}
+
+	  <div class="product-item__caption">
+
+	  	<span class="product-item__title body-text-hd {% if settings.show_reviews_badge and product.metafields.reviews.rating.value != blank %} has-rating-after {% endif %} ">
+	  		<span class="{% if grid_style == 'classic' %} underline-animation {% endif %}">
+					{%- liquid
+		  			unless blank_product
+		  				echo product.title | escape
+		  			else
+		  				echo 'general.onboarding.product_title' | t
+		  			endunless
+		  		-%}
+	  		</span>
+	  	</span>
+
+			<div class="product-item__price">
+
+				{% unless blank_product %}
+        	{%- render 'product-price', target: product, variant: product.selected_or_first_available_variant, id: index -%}
+				{%- else -%}
+					<span class="product-item__price--original">
+						{{ 9999 | money }}
+					</span>
+				{%- endunless -%}
+
+			</div>
+
+			{%- liquid
+				if settings.show_reviews_badge
+        	render 'product-rating', product: product, style: 'small'
+				endif 
+			-%}
+
+		</div>
+
+		{%- unless blank_product -%}
+
+	  	{%- if sold_out -%}
+				
+				<span class="product-item__badge product-item__badge--sold"><span>{{ 'products.grid.sold_out_product' | t }}</span></span>
+
+			{%- elsif on_sale -%}
+
+				{%- if grid_discount == 'percentage' -%}
+
+					{%- liquid 
+						if product.compare_at_price_varies or product.price_varies
+							assign compare_price_nums = 0
+							assign max_compare_at_price = 0
+							assign compare_at_price = 0
+							assign price = 0
+							for variant in product.variants
+								if variant.compare_at_price > variant.price
+									assign variant_compare_at_price = variant.compare_at_price | minus: variant.price
+									if variant_compare_at_price > max_compare_at_price
+										assign max_compare_at_price = variant_compare_at_price
+										assign compare_at_price = variant.compare_at_price
+										assign price = variant.price
+										assign compare_price_nums = compare_price_nums | plus: 1
+									endif
+								endif
+							endfor
+						else
+							assign compare_at_price = product.compare_at_price
+							assign price = product.price
+							assign compare_price_nums = 1
+						endif
+					-%}
+
+					<span class="product-item__badge product-item__badge--sale"><span>
+						{%- liquid
+							assign saved = compare_at_price | minus: price | times: 100.0 | divided_by: compare_at_price | round | prepend: '-' | append: '%'
+              if compare_price_nums == 1 and product.compare_at_price_varies == false
+                echo saved
+              else 
+                echo 'products.grid.save_percent' | t: percent: saved
+              endif
+						-%}
+					</span></span>
+
+				{%- else -%}
+
+					<span class="product-item__badge product-item__badge--sale"><span>{{ 'products.grid.on_sale_product' | t }}</span></span>
+					
+				{%- endif -%}
+
+			{%- elsif product.tags contains 'preorder' -%}
+
+				<span class="product-item__badge product-item__badge--preorder"><span>{{ 'products.grid.preorder_product' | t }}</span></span>
+
+			{%- elsif product.tags contains 'new' -%}
+
+				<span class="product-item__badge product-item__badge--new"><span>{{ 'products.grid.new_product' | t }}</span></span>
+
+			{%- endif -%}
+
+		{%- endunless -%}
+
+	</a>
+
+</div>

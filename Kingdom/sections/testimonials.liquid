@@ -1,0 +1,159 @@
+{{ 'section-testimonials.css' | asset_url | stylesheet_tag }}
+
+<div id="testimonials-{{ section.id }}"class="content-section gutter--on testimonials {% if section.settings.color_bg != 'rgba(0,0,0,0)' %} parent-has-inner-padding {% endif %}">
+
+  <script class="gutter-script">
+    {%- if section.settings.color_bg != 'rgba(0,0,0,0)' -%}
+      document.getElementById('testimonials-{{ section.id }}').parentElement.classList.add('has-inner-padding');
+    {%- endif -%}
+  </script>
+
+  <css-slider class="testimonials__container"
+    data-options='{
+      "selector": ".testimonial",
+      "navigation": false,
+      "autoHeight": true
+    }'
+    style="display:block"
+  >
+        
+    {%- for block in section.blocks -%}
+
+      <div class="testimonial content-slider__item" {{ block.shopify_attributes }}>
+
+        <div class="testimonial__holder centered-section-content">
+
+          <div>
+
+            <div class="testimonial__header">
+
+              {%- if block.settings.author_avatar -%}
+                <figure class="testimonial__author-avatar lazy-image lazy--image" aria-hidden="true">
+                  <img 
+                    src="{{ block.settings.author_avatar | image_url: width: 66, height: 66, crop: 'center' }}"
+                    alt="{{ block.settings.author_avatar.alt | escape }}"
+                    srcset="{{ block.settings.author_avatar | image_url: width: 66, height: 66, crop: 'center' }} 66w, {{ block.settings.author_avatar | image_url: width: 132, height: 132, crop: 'center' }} 132w, {{ block.settings.author_avatar | image_url: width: 198, height: 198, crop: 'center' }} 198w" 
+                    loading="lazy" 
+                    sizes="66px"
+                    width="66" height="66"
+                    onload="this.classList.add('lazyloaded')"
+                  />
+                </figure>
+              {%- endif -%}
+              
+              <div>
+
+                {%- if block.settings.author_name -%}
+                  <span class="testimonial__author-name">{{ block.settings.author_name | escape }}</span>
+                {%- endif -%}
+
+                {%- if block.settings.author_title -%}
+                  <span class="testimonial__author-title body-text-sm">{{ block.settings.author_title | escape }}</span>
+                {%- endif -%}
+
+              </div>
+
+            </div>
+
+            <div class="testimonial__content h1 rte">
+              {{ block.settings.quote }}
+            </div>
+
+          </div>
+
+        </div>
+
+      </div>
+
+    {%- endfor -%}
+
+  </css-slider>
+
+</div>
+
+{%- if section.settings.color_bg != 'rgba(0,0,0,0)' -%}
+  {% style %}
+    #testimonials-{{ section.id }} {
+      background: {{ section.settings.color_bg }};
+      padding-top: var(--vertical-padding-more);
+      padding-bottom: var(--vertical-padding-more);
+    }  
+  {% endstyle %}
+{%- endif -%}
+
+{%- if section.settings.color_text != 'rgba(0,0,0,0)' -%}
+  {% style %}
+    #testimonials-{{ section.id }},
+    #testimonials-{{ section.id }} a {
+      color: {{ section.settings.color_text }};
+    }
+    #testimonials-{{ section.id }} .css-slider-dot-navigation .css-slider-dot {
+      background: {{ section.settings.color_text }};
+    }
+  {% endstyle %}
+{%- endif -%}
+
+{% schema %}
+  {
+    "name": "t:sections.testimonials.name",
+    "class": "mount-css-slider with-gutter",
+    "max_blocks": 8,
+    "settings": [
+      {
+        "type": "header",
+        "content": "t:settings_schema.colors.name"
+      },
+      {
+        "type": "color",
+        "id": "color_bg",
+        "label": "t:sections.custom-colors.background.label",
+        "default": "rgba(0,0,0,0)"
+      },
+      {
+        "type": "color",
+        "id": "color_text",
+        "label": "t:sections.custom-colors.text.label",
+        "default": "rgba(0,0,0,0)"
+      }
+    ],
+    "blocks": [
+      {
+        "type": "testimonial",
+        "name": "t:sections.testimonials.blocks.testimonial.name",
+        "settings": [
+          {
+            "type": "richtext",
+            "id": "quote",
+            "label": "t:sections.testimonials.blocks.testimonial.settings.quote.label",
+            "default": "<p>Add customer reviews and testimonials to showcase your store's happy customers.</p>"
+          },
+          {
+            "type": "text",
+            "id": "author_name",
+            "label": "t:sections.testimonials.blocks.testimonial.settings.author_name.label",
+            "default": "Author"
+          },
+          {
+            "type": "text",
+            "id": "author_title",
+            "label": "t:sections.testimonials.blocks.testimonial.settings.author_title.label",
+            "default": "Customer"
+          },
+          {
+            "type": "image_picker",
+            "id": "author_avatar",
+            "label": "t:sections.testimonials.blocks.testimonial.settings.author_avatar.label"
+          }
+        ]
+      }
+    ],
+    "presets": [{
+      "name": "t:sections.testimonials.presets.name",
+      "blocks": [{
+        "type": "testimonial"
+      }, {
+        "type": "testimonial"
+      }]
+    }]
+  }
+{% endschema %}

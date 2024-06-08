@@ -1,0 +1,105 @@
+.announcement {
+  position: fixed;
+  display: block;
+  top: 0;
+  left: 0;
+  width: 100%;
+  z-index: 990;
+  height: 40px;
+  display: flex;
+  align-items: center;
+  padding: 0 10px;
+  justify-content: center;
+  z-index: 9999;
+}
+
+.announcement__text {
+  line-height: 1.2;
+  text-align: center;
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+
+.announcement__exit {
+  position: fixed;
+  display: block;
+  top: 0;
+  width: 40px;
+  height: 40px;
+  cursor: pointer;
+  transition: all 100ms linear;
+  z-index: 9999;
+}
+html[dir=rtl] .announcement__exit {
+  left: 0;
+}
+html[dir=ltr] .announcement__exit {
+  right: 0;
+}
+.announcement__exit svg {
+  width: 100%;
+  height: 100%;
+}
+.announcement__exit:hover {
+  transform: scale(1.15);
+}
+
+.disable-transitions {
+  transition: none !important;
+}
+
+#shopify-section-announcement-bar {
+  display: none;
+}
+
+body.show-announcement-bar #shopify-section-announcement-bar {
+  display: block;
+}
+body.show-announcement-bar .sidebar__pickup {
+  padding-top: 40px;
+}
+@media screen and (min-width: 949px) {
+  body.show-announcement-bar .sidebar__container {
+    padding-top: 120px;
+  }
+  body.show-announcement-bar .sidebar__cart > div, body.show-announcement-bar .sidebar__submenu .sidebar__container {
+    padding-top: 40px;
+  }
+  body.show-announcement-bar .sidebar__search.predictive-search .sidebar__search-close {
+    top: 54px;
+  }
+  body.show-announcement-bar .sidebar__cart .cart {
+    padding-top: 40px;
+  }
+  body.show-announcement-bar #content-holder, body.show-announcement-bar .sidebar__cart-handle, body.show-announcement-bar .sidebar__cart-close {
+    margin-top: 40px;
+  }
+  body.show-announcement-bar.product-template .gallery--slider {
+    height: calc(100vh - 40px);
+  }
+  body.show-announcement-bar.product-template .product__text {
+    min-height: calc(100vh - 40px);
+  }
+}
+@media screen and (max-width: 948px) {
+  body.show-announcement-bar .sidebar {
+    top: 40px;
+  }
+  body.show-announcement-bar #content-holder {
+    margin-top: 106px;
+  }
+  body.show-announcement-bar #collection-filters .collection__filters-close {
+    top: 58px;
+  }
+  html[dir=rtl] body.show-announcement-bar #collection-filters .collection__filters-close {
+    left: 30px;
+  }
+  html[dir=ltr] body.show-announcement-bar #collection-filters .collection__filters-close {
+    right: 30px;
+  }
+}
+
+body.no-transitions * {
+  transition: none !important;
+}

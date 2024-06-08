@@ -1,0 +1,16 @@
+<form action="{{ routes.search_url }}" method="get" class="input-group search-form" role="search" autocomplete="off">
+
+	{%- unless search_placeholder != blank -%}
+		{%- capture search_placeholder -%}{{ 'search.form.placeholder' | t }}{%- endcapture -%}
+	{%- endunless -%}
+
+  <input type="search" name="q" value="{{ search.terms | escape }}" placeholder="{{ search_placeholder }}" data-responsive-placeholder="{{ 'search.form.responsive_placeholder' | t }}" class="input-group-field search-field" aria-label="{{ search_placeholder }}" autocomplete="off" data-js-search-input>
+  {%- unless search_label -%}
+	  <button type="submit" class="btn icon-fallback-text" aria-label="{{ 'search.form.submit' | t }}">
+	    <span class="icon icon-search" aria-hidden="true">{%- render 'theme-symbols', icon: 'search' -%}</span>
+  	</button>
+  {%- else -%}
+  	<button type="submit" class="button button--solid">{{ search_label }}</button>
+  {%- endunless -%}
+
+</form>

@@ -1,0 +1,117 @@
+<style>
+  .icons-container {
+    margin-top: 90px;
+    border-top: 1px solid #ddd;
+    border-bottom: 1px solid #ddd;
+    padding: 70px 60px 90px;
+  }
+  .icons-container h2 {
+    font-size: 40px;
+    text-align: center;
+    font-family: 'Sugo Pro Classic'
+    , sans-serif;
+    margin-bottom: 10px;
+  }
+  .icons-container .icon-group {
+    display: flex;
+    justify-content: space-between;
+    text-align: center;
+    margin-top: 40px;
+    flex-wrap: wrap;
+  }
+  .icons-container .icon-single {
+    flex-grow: 1;
+    width: 12.5%;
+  }
+  .icons-container .icon-single p {
+    font-size: 14px;
+    max-width: 80px;
+    display: block;
+    margin: 4px auto;
+    line-height: 19px;
+  }
+  .icons-container .icon-single img {
+    max-width: 50px;
+    display: block;
+    margin: auto;
+  }
+  @media screen and (max-width: 600px) {
+    .icons-container {
+      padding-left: 25px;
+      padding-right: 25px;
+    }
+    .icons-container .icon-single {
+      width: 33%;
+      margin-bottom: 20px;
+    }
+    .mobile-break {
+      display: block;
+    }
+  }
+</style>
+
+<div class="icons-container">
+  <h2>{{ section.settings.title }}</h2>
+
+  {% if product.handle contains 'fragrance' %}
+  {% else %}
+    <center>
+      <p>{{ section.settings.description }}</p>
+    </center>
+  {% endif %}
+
+  <div class="icon-group">
+    {% for block in section.blocks %}
+      <div class="icon-single">
+        {% if block.settings.image %}
+          <img src="{{ block.settings.image | img_url: 'master' }}" loading="lazy" />
+        {% endif %}
+        <p>{{ block.settings.name }}</p>
+      </div>
+    {% endfor %}
+  </div>
+</div>
+
+{% schema %}
+  {
+    "name": "Foundry Icons Banner",
+    "settings": [
+      {
+        "type": "text",
+        "id": "title",
+        "label": "Title",
+        "default": "MADE CLEAN IN NEW YORK"
+      },
+      {
+        "type": "text",
+        "id": "description",
+        "label": "Decription",
+        "default": "The average person applies over 120 chemicals to their face and body every day. We're on a mission to lower that average by ensuring every Blu Atlas product is composed of 96-100% naturally sourced ingredients, all thoroughly vetted through scientific research."
+      }
+    ],
+    "blocks": [
+      {
+        "type": "icon",
+        "name": "Icon",
+        "settings": [
+          {
+            "type": "image_picker",
+            "id": "image",
+            "label": "Icon Image"
+          },
+          {
+            "type": "text",
+            "id": "name",
+            "label": "Icon Name",
+            "default": "Icon Name"
+          }
+        ]
+      }
+    ],
+    "presets": [
+      {
+        "name": "Foundry Icons Banner"
+      }
+    ]
+  }
+{% endschema %}

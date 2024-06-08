@@ -1,0 +1,115 @@
+{%- if settings.show_breadcrumb and template != 'index' and template != blank -%}
+
+	<nav class="breadcrumb body-text-sm" role="navigation" aria-label="breadcrumbs">
+
+		<span class="breadcrumb__link"><a href="{{ routes.root_url }}">{{ 'general.breadcrumb.homepage' | t }}</a></span>
+
+		{%- if template contains 'search' -%}
+
+			<span class="breadcrumb__separator">/</span>
+			<span class="breadcrumb__current">
+				{%- liquid 
+					if search.terms
+						echo 'general.breadcrumb.search_results' | t: terms: search.terms
+					else
+						echo 'general.breadcrumb.search' | t
+					endif
+				-%}
+			</span>
+
+		{%- else -%}
+		
+			{%- unless template contains 'product' -%}
+				<span class="breadcrumb__separator">/</span>
+				{%- if template contains 'collections' -%}
+					<span class="breadcrumb__current">{{ 'general.breadcrumb.collections' | t }}</span>
+				{%- elsif collection -%}
+					<span class="breadcrumb__link"><a href="{{ routes.collections_url }}">{{ 'general.breadcrumb.collections' | t }}</a></span>
+				{%- endif -%}
+			{%- endunless -%}
+
+			{%- if collection -%}
+
+				<span class="breadcrumb__separator">/</span>
+				{%- if template contains 'collection' -%}
+					<span class="breadcrumb__current">{{ collection.title | escape }}</span>
+				{%- else -%}
+					<span class="breadcrumb__link">
+						{%- liquid
+							if collection.handle
+								capture url
+									echo routes.collections_url 
+										echo '/'
+									echo collection.handle
+								endcapture
+								echo collection.title | link_to: url
+							endif
+						-%}
+					</span>
+				{%- endif -%}
+
+			{%- elsif product -%}
+
+				<span class="breadcrumb__separator">/</span><span class="breadcrumb__link"><a href="{{ routes.collections_url }}">{{ 'general.breadcrumb.collections' | t }}</a></span>
+
+			{%- elsif blog -%}
+
+				{%- if article -%}
+					<span class="breadcrumb__link"><a href="{{ blog.url }}">
+				{%- else -%}
+					<span class="breadcrumb__current">
+				{%- endif -%}
+					{{ blog.title | escape }}
+				{%- if article -%}
+					</a></span>
+				{%- else -%}
+					</span>
+				{%- endif -%}
+
+				{%- if article -%}
+					<span class="breadcrumb__separator">/</span><span class="breadcrumb__current">{{ article.title | escape }}</span>
+				{%- endif -%}
+
+			{%- elsif template contains 'customers' -%}
+
+				{%- if template contains 'address' or template contains 'order' -%}
+
+					<span class="breadcrumb__link"><a href="{{ routes.account_url }}">{{ 'general.breadcrumb.account.title' | t }}</a></span>
+					<span class="breadcrumb__separator">/</span>
+					<span class="breadcrumb__current">
+						{%- if template contains 'addresses' -%}
+							{{ 'general.breadcrumb.account.addresses' | t }}</span>
+						{%- elsif template contains 'order' -%}
+							{{ 'general.breadcrumb.account.orders' | t }}</span>
+						{%- endif -%}
+					</span>
+				
+				{%- else -%}
+					<span class="breadcrumb__current">{{ 'general.breadcrumb.account.title' | t }}</span>
+				{%- endif -%}
+
+			{%- elsif template contains 'cart' -%}
+
+				<span class="breadcrumb__current">{{ 'general.breadcrumb.cart' | t }}</span>
+
+			{%- elsif template contains '404' -%}
+
+				<span class="breadcrumb__current">{{ 'general.404.title' | t }}</span>
+				
+			{%- else -%}	
+
+				<span class="breadcrumb__current">{{ page.title | escape }}</span>
+
+			{%- endif -%}
+
+			{%- if product -%}
+
+				<span class="breadcrumb__separator">/</span><span class="breadcrumb__current">{{ product.title | escape }}</span>
+
+			{%- endif -%}
+
+		{%- endif -%}
+
+	</nav>
+
+{%- endif -%}

@@ -1,0 +1,75 @@
+.dragging .product-gallery__item, .product-gallery.flickity-enabled .product-gallery__item:not(.is-selected) .lazy-image {
+  pointer-events: none !important;
+}
+.product-gallery__item iframe, .product-gallery__item video, .product-gallery__item product-model, .product-gallery__item model-viewer, .product-gallery__item .shopify-model-viewer-ui {
+  position: absolute;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+}
+.product-gallery__item:focus, .product-gallery__item:focus-visible {
+  outline: none !important;
+}
+@media screen and (min-width: 949px) {
+  .product-gallery__item:not([data-product-media-type=image]) {
+    height: calc(100% - 100px) !important;
+    max-width: 100%;
+    display: flex;
+    align-items: center;
+  }
+}
+@media screen and (min-width: 769px) {
+  .product-gallery__item:not([data-product-media-type=image]) > div {
+    width: 100%;
+    display: flex;
+  }
+}
+
+.product-gallery__view-in-space {
+  font-family: var(--font-stack-body);
+  font-weight: var(--font-weight-body);
+  font-style: var(--font-style-body);
+  font-size: calc(12 / 14 * var(--base-body-size) + 0px);
+  line-height: 1;
+  background-color: rgba(var(--color-body-txt), 0.08);
+  border: none;
+  width: 100%;
+  min-height: 44px;
+  padding-top: 10px;
+  padding-bottom: 10px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  color: rgba(var(--color-body-txt), 1);
+}
+.product-gallery--gutter + .product-gallery__view-in-space {
+  width: calc(100% - 50px);
+  margin-inline-start: 25px;
+}
+.product-gallery--dots + .product-gallery__view-in-space:not([data-shopify-xr-hidden]) {
+  margin-top: 20px;
+}
+.product-gallery__view-in-space[data-shopify-xr-hidden] {
+  display: none;
+}
+.product-gallery__view-in-space:hover .product-gallery__view-in-space-text, .product-gallery__view-in-space:focus-visible .product-gallery__view-in-space-text {
+  border-bottom-color: rgba(var(--color-body-txt), 1);
+}
+.product-gallery__view-in-space svg.icon {
+  height: 2em;
+  width: 2em;
+  margin-inline-end: 0.2em;
+  fill: transparent;
+}
+.product-gallery__view-in-space svg.icon .icon-3d-badge-full-color-outline {
+  stroke: none;
+}
+.product-gallery__view-in-space svg.icon .icon-3d-badge-full-color-element {
+  fill: rgba(var(--color-body-txt), 1);
+  opacity: 1;
+}
+
+.product-gallery__view-in-space-text {
+  border-bottom: 1px solid transparent;
+}

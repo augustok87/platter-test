@@ -1,0 +1,452 @@
+
+{{ 'section-rich-text.css' | asset_url | stylesheet_tag }}
+
+<div id="rich-text-{{ section.id }}" class="content-section {% unless section.settings.image == blank %} gutter--off {% else %} gutter--on centered-section-content {% endunless %} rich-text rich-text--{{ section.settings.image_position }} rich-text--text-{{ section.settings.text_alignment }} rich-text--media-{% unless section.settings.image == blank %}on{% else %}off{% endunless %} {% if section.settings.color_bg != 'rgba(0,0,0,0)' and section.settings.image == blank %} parent-has-inner-padding {% endif %}">
+
+  <script class="gutter-script">
+    {%- unless section.settings.image == blank -%}
+      document.getElementById('rich-text-{{ section.id }}').parentElement.classList.add('without-gutter');
+    {%- else -%}
+      document.getElementById('rich-text-{{ section.id }}').parentElement.classList.add('with-gutter');
+      {%- if section.settings.color_bg != 'rgba(0,0,0,0)' -%}
+        document.getElementById('rich-text-{{ section.id }}').parentElement.classList.add('has-inner-padding');
+      {%- endif -%}
+    {%- endunless -%}
+  </script>
+
+  <div class="rich-text__content">
+
+    {%- for block in section.blocks -%}
+
+      {%- case block.type -%}
+
+        {%- when 'heading' -%}
+          <{{ block.settings.seo_h_tag }} class="rich-text__title {% if block.settings.heading_size == 'regular' %} h1 {% elsif block.settings.heading_size == 'large' %} h0 {% else %} hh {% endif %}" {{ block.shopify_attributes }}>{{ block.settings.heading }}</{{ block.settings.seo_h_tag }}>
+
+        {%- when 'text' -%}
+          <div class="rich-text__body rte"  {{ block.shopify_attributes }}>{{ block.settings.text }}</div>
+
+        {%- when 'button' -%}
+          <div class="rich-text__button">
+            <a class="button button--outline" href="{{ block.settings.button_link | escape }}" title="{{ block.settings.button_label }}"  {{ block.shopify_attributes }}>{{ block.settings.button_label | escape }}</a>
+          </div>
+
+        {%- when 'icon' -%}
+          <span class="rich-text__icon" {{ block.shopify_attributes }}>
+            {%- unless block.settings.custom_icon == blank -%}
+              <img 
+                src="{{ block.settings.custom_icon | image_url: width: 64 }}" 
+                alt="{{ block.settings.custom_icon.alt | escape }}"
+                srcset="
+                  {{ block.settings.custom_icon | image_url: width: 64 }} 64w
+                  {% if block.settings.custom_icon.width >= 128 %}, {{ block.settings.custom_icon | image_url: width: 128 }} 128w {% endif %} 
+                  {% if block.settings.custom_icon.width >= 192 %}, {{ block.settings.custom_icon | image_url: width: 192 }} 192w {% endif %} 
+                  {% if block.settings.custom_icon.width >= 256 %}, {{ block.settings.custom_icon | image_url: width: 256 }} 256w {% endif %} 
+                "
+                loading="lazy"
+                onload="this.classList.add('lazyloaded')"
+                sizes="128px" width="128" height="128"
+              />
+            {%- else -%}
+              {%- render 'icon-pack', icon: block.settings.icon -%}
+            {%- endunless -%}
+          </span>
+
+      {%- endcase -%}
+
+    {%- endfor -%}
+
+  </div>
+
+  {%- unless section.settings.image == blank -%}
+    {%- liquid
+      if section.index == 1 
+        assign preload = true
+      else
+        assign preload = false
+      endif
+    -%}
+    <div class="rich-text__media">
+      {%- capture sizes -%}
+        sizes="(max-width: 648px) calc(50vh * {{ section.settings.image.aspect_ratio }}), calc({{ section.settings.image_height }} * {{ section.settings.image.aspect_ratio }})"
+      {%- endcapture -%}
+      {%- render 'lazy-image', image: section.settings.image, type: 'background', sizes: sizes, image_alignment: true, preload: preload -%}
+    </div>
+    {% style %}
+      #rich-text-{{ section.id }} .rich-text__media {
+        height: {{ section.settings.image_height }};
+      }
+    {% endstyle %}
+  {%- endunless -%}
+
+</div>
+
+{%- if section.settings.color_bg != 'rgba(0,0,0,0)' -%}
+  {% style %}
+    #rich-text-{{ section.id }} .rich-text__content,
+    #rich-text-{{ section.id }}.rich-text--media-off {
+      background: {{ section.settings.color_bg }};
+    }
+    #rich-text-{{ section.id }}.rich-text--media-off {
+      padding-top: var(--vertical-padding-more);
+      padding-bottom: var(--vertical-padding-more);
+    }
+  {% endstyle %}
+{%- endif -%}
+
+{%- if section.settings.color_text != 'rgba(0,0,0,0)' -%}
+  {% style %}
+    #rich-text-{{ section.id }} {
+      color: {{ section.settings.color_text }};
+    }
+    #rich-text-{{ section.id }} a {
+      color: {{ section.settings.color_text }};
+    }
+    #rich-text-{{ section.id }} svg * {
+      stroke: {{ section.settings.color_text }};
+    } 
+    #rich-text-{{ section.id }} .button--outline {
+      border-color: {{ section.settings.color_text }};
+    }
+  {% endstyle %}
+{%- endif -%}
+
+
+{% schema %}
+  {
+    "name": "t:sections.rich-text.name",
+    "tag": "section",
+    "blocks": [
+      {
+        "type": "heading",
+        "name": "t:sections.rich-text.blocks.heading.name",
+        "settings": [
+           {
+            "type": "richtext",
+            "id": "heading",
+            "label": "t:sections.rich-text.blocks.heading.settings.heading.label",
+            "default": "<p>Talk about your brand</p>"
+          }, 
+          {
+            "type": "select",
+            "id": "heading_size",
+            "label": "t:sections.rich-text.blocks.heading.settings.heading_size.label",
+            "options": [
+              {
+                "value": "regular",
+                "label": "t:sections.rich-text.blocks.heading.settings.heading_size.options__1.label"
+              },
+              {
+                "value": "large",
+                "label": "t:sections.rich-text.blocks.heading.settings.heading_size.options__2.label"
+              },
+              {
+                "value": "huge",
+                "label": "t:sections.rich-text.blocks.heading.settings.heading_size.options__3.label"
+              }
+            ],
+            "default": "regular"
+          },
+          {
+            "type": "select",
+            "id": "seo_h_tag",
+            "label": "t:sections.refactor_words.seo.label",
+            "info": "t:sections.refactor_words.seo.info",
+            "options": [
+              {
+                "value": "h1",
+                "label": "H1"
+              },
+              {
+                "value": "h2",
+                "label": "H2"
+              },
+              {
+                "value": "h3",
+                "label": "H3"
+              },
+              {
+                "value": "h4",
+                "label": "H4"
+              },
+              {
+                "value": "span",
+                "label": "span"
+              }
+            ],
+            "default": "h3"
+          }
+        ]
+      },
+      { 
+        "type": "text",
+        "name": "t:sections.rich-text.blocks.text.name",
+        "settings": [
+          {
+            "type": "richtext",
+            "id": "text",
+            "label": "t:sections.rich-text.blocks.text.settings.text.label",
+            "default": "<p>Use this text to share information about your brand with your customers. Describe a product, share announcements, or welcome customers to your store.</p>"
+          }
+        ]
+      },
+      {
+        "type": "button",
+        "name": "t:sections.rich-text.blocks.button.name",
+        "settings": [
+          {
+            "type": "text",
+            "id": "button_label",
+            "label": "t:sections.rich-text.blocks.button.settings.button_label.label",
+            "default": "Button label"
+          },
+          {
+            "type": "url",
+            "id": "button_link",
+            "label": "t:sections.rich-text.blocks.button.settings.button_link.label"
+          }
+        ]
+      },
+      {
+        "type": "icon",
+        "name": "t:sections.rich-text.blocks.icon.name",
+        "settings": [
+					{
+						"type": "select",
+						"id": "icon",
+						"label": "t:sections.text-columns-with-icons.blocks.icon.settings.icon.label",
+						"options": [
+							{
+								"value": "earth-globe",
+								"label": "Earth globe",
+								"group": "Business"
+							},
+							{
+								"value": "flag",
+								"label": "Flag",
+								"group": "Business"
+							},
+							{
+								"value": "helpline",
+								"label": "Helpline",
+								"group": "Business"
+							},
+							{
+								"value": "like-hand",
+								"label": "Like hand",
+								"group": "Business"
+							},
+							{
+								"value": "map-marker",
+								"label": "Map marker",
+								"group": "Business"
+							},
+							{
+								"value": "security-shield",
+								"label": "Security shield",
+								"group": "Business"
+							},
+							{
+								"value": "star",
+								"label": "Star",
+								"group": "Business"
+							},
+							{
+								"value": "appointment",
+								"label": "Appointment",
+								"group": "Commerce"
+							},
+							{
+								"value": "archive-box",
+								"label": "Archive box",
+								"group": "Commerce"
+							},
+							{
+								"value": "box",
+								"label": "Box",
+								"group": "Commerce"
+							},
+							{
+								"value": "checkout-cart",
+								"label": "Checkout cart",
+								"group": "Commerce"
+							},
+							{
+								"value": "currency",
+								"label": "Currency",
+								"group": "Commerce"
+							},
+							{
+								"value": "delivery",
+								"label": "Delivery",
+								"group": "Commerce"
+							},
+							{
+								"value": "delivery-time",
+								"label": "Delivery time",
+								"group": "Commerce"
+							},
+							{
+								"value": "giftbox",
+								"label": "Giftbox",
+								"group": "Commerce"
+							},
+							{
+								"value": "label",
+								"label": "Label",
+								"group": "Commerce"
+							},
+							{
+								"value": "open-24-hours",
+								"label": "Open 24 hurs",
+								"group": "Commerce"
+							},
+							{
+								"value": "open-box",
+								"label": "Open box",
+								"group": "Commerce"
+							},
+							{
+								"value": "paper-bag",
+								"label": "Paper bag",
+								"group": "Commerce"
+							},
+							{
+								"value": "shipping-truck",
+								"label": "Shipping truck",
+								"group": "Commerce"
+							},
+							{
+								"value": "store",
+								"label": "Store",
+								"group": "Commerce"
+							},
+							{
+								"value": "time",
+								"label": "Time",
+								"group": "Commerce"
+							},
+							{
+								"value": "time-limit",
+								"label": "Time limit",
+								"group": "Commerce"
+							},
+							{
+								"value": "wallet",
+								"label": "Wallet",
+								"group": "Commerce"
+							}
+						]
+					},
+					{
+						"id": "custom_icon",
+						"type": "image_picker",
+						"label": "t:sections.local-extra-words.sections.text-columns-with-icons.blocks.icon.name",
+						"info": "t:sections.local-extra-words.sections.text-columns-with-icons.blocks.icon.info"
+					},
+					{
+						"type": "paragraph",
+						"content": "t:sections.local-extra-words.sections.text-columns-with-icons.blocks.select_icon.info"
+					}
+        ]
+      }
+    ],
+    "settings": [
+      {
+        "type": "select",
+        "id": "text_alignment",
+        "label": "t:sections.rich-text.settings.text_alignment.label",
+        "options": [
+          {
+            "value": "left",
+            "label": "t:sections.rich-text.settings.text_alignment.options__1.label"
+          },
+          {
+            "value": "center",
+            "label": "t:sections.rich-text.settings.text_alignment.options__2.label"
+          },
+          {
+            "value": "right",
+            "label": "t:sections.rich-text.settings.text_alignment.options__3.label"
+          }
+        ],
+        "default": "left"
+      },
+      {
+        "type": "header",
+        "content": "t:sections.rich-text.settings.image.label"
+      },
+      {
+        "type": "image_picker",
+        "id": "image",
+        "label": "t:sections.rich-text.settings.image.label"
+      },
+      {
+        "type": "select",
+        "id": "image_position",
+        "label": "t:sections.rich-text.settings.image_position.label",
+        "options": [
+          {
+            "value": "align-right",
+            "label": "t:sections.rich-text.settings.image_position.options__1.label"
+          },
+          {
+            "value": "align-left",
+            "label": "t:sections.rich-text.settings.image_position.options__2.label"
+          }
+        ],
+        "default": "align-left"
+      },
+      {
+        "type": "select",
+        "id": "image_height",
+        "label": "t:sections.rich-text.settings.image_height.label",
+        "options": [
+          {
+            "value": "50vh",
+            "label": "t:sections.rich-text.settings.image_height.options__1.label"
+          },
+          {
+            "value": "75vh",
+            "label": "t:sections.rich-text.settings.image_height.options__2.label"
+          },
+          {
+            "value": "100vh",
+            "label": "t:sections.rich-text.settings.image_height.options__3.label"
+          }
+        ],
+        "default": "75vh"
+      },
+      {
+        "type": "header",
+        "content": "t:settings_schema.colors.name"
+      },
+      {
+        "type": "color",
+        "id": "color_text",
+        "label": "t:sections.custom-colors.text.label",
+        "default": "rgba(0,0,0,0)"
+      },
+      {
+        "type": "color",
+        "id": "color_bg",
+        "label": "t:sections.custom-colors.background.label",
+        "default": "rgba(0,0,0,0)"
+      }
+    ],
+    "presets": [{
+      "name": "t:sections.rich-text.presets.name",
+      "blocks": [
+        {
+          "type": "heading"
+        },
+        {
+          "type": "text"
+        },
+        {
+          "type": "button"
+        }
+      ]
+    }]
+  }
+{% endschema %}

@@ -1,0 +1,52 @@
+<div class="content-section full-width-section-content gutter--on heading heading--alignment-left">
+  <div class="heading__content">
+    <{{ section.settings.seo_h_tag }} class="heading__title h1">{{ section.settings.title | escape }}</{{ section.settings.seo_h_tag }}>
+  </div>
+</div>
+
+{% schema %}
+  {
+    "name": "t:sections.heading.name",
+    "class": "mount-heading with-gutter",
+    "settings": [
+      {
+        "type": "text",
+        "id": "title",
+        "label": "t:sections.heading.settings.title.label",
+        "default": "Heading"
+      },
+      {
+        "type": "select",
+        "id": "seo_h_tag",
+        "label": "t:sections.refactor_words.seo.label",
+        "info": "t:sections.refactor_words.seo.info",
+        "options": [
+          {
+            "value": "h1",
+            "label": "H1"
+          },
+          {
+            "value": "h2",
+            "label": "H2"
+          },
+          {
+            "value": "h3",
+            "label": "H3"
+          },
+          {
+            "value": "h4",
+            "label": "H4"
+          },
+          {
+            "value": "span",
+            "label": "span"
+          }
+        ],
+        "default": "h2"
+      }
+    ], 
+    "presets": [{
+      "name": "t:sections.heading.presets.name"
+    }]
+  }
+{% endschema %}

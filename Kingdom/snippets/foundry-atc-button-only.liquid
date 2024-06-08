@@ -1,0 +1,21 @@
+
+{% assign handle = handle | default: atc_variant.id | default: 'add-to-cart' %}
+{% assign atc_product = atc_variant.product %}
+
+<div class="add-to-cart-button__container" data-js-product-item data-handle="{{ handle }}">
+  <quick-add-to-cart class="foundry-atc-button-component">
+    <product-form {% if settings.cart_action == 'overlay' %} data-ajax-cart {% endif %}>
+      <div class="quick-add-to-cart-button">
+        {%- form 'product', atc_product -%}
+          <input type="hidden" name="id" value="{{ atc_variant.id }}">
+          <button type="submit" name="add" class="button" data-js-product-add-to-cart>
+            <span class="add-to-cart__text" data-js-product-add-to-cart-text>
+              {{ 'products.grid.quick_buy' | t }}
+            </span>
+            <span class="add-to-cart__preloader" aria-hidden="true"></span>
+          </button>
+        {%- endform -%}
+      </div>
+    </product-form>
+  </quick-add-to-cart>
+</div>

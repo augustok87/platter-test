@@ -1,0 +1,189 @@
+.localization-form-holder .localization-form {
+  flex-wrap: wrap;
+  display: flex;
+  margin-bottom: 20px;
+  margin-top: -15px;
+}
+.localization-form-holder .localization-form ~ .footer-icons {
+  margin-top: 24px;
+}
+.localization-form-holder .localization-form ~ .footer-copyright {
+  margin-top: 28px;
+}
+.localization-form-holder .localization-form__item {
+  margin-bottom: 10px;
+  display: flex;
+  position: relative;
+}
+.localization-form-holder .localization-form__item:not(:last-child) {
+  margin-inline-end: 20px;
+}
+.localization-form-holder .regular-select-cover {
+  display: inline-block;
+  width: auto !important;
+  position: relative;
+  background-color: rgba(var(--color-footer-bg), 1);
+  color: rgba(var(--color-footer-txt), 1);
+  height: 45px;
+  background-repeat: no-repeat;
+  background-position: calc(100% - 6px) 50%;
+  background-size: 24px 24px;
+  border: 1px solid rgba(var(--color-footer-txt), 0.16);
+}
+html[dir=rtl] .localization-form-holder .regular-select-cover {
+  background-position: calc(0% + 6px) 50%;
+}
+.no-touchevents .localization-form-holder .regular-select-cover:hover, .localization-form-holder .regular-select-cover[aria-expanded=true] {
+  border-color: rgba(var(--color-footer-txt), 0.28);
+}
+.localization-form-holder .regular-select-cover.focus {
+  outline: auto 5px -webkit-focus-ring-color;
+}
+.localization-form-holder .regular-select-cover svg {
+  top: 9px;
+}
+.localization-form-holder .regular-select-cover path {
+  fill: rgba(var(--color-footer-txt), 0.46);
+}
+.localization-form-holder .regular-select-inner {
+  height: 45px;
+  color: rgba(var(--color-footer-txt), 1);
+  padding-top: 15px;
+  padding-inline-end: 60px;
+  padding-bottom: 0;
+  padding-inline-start: 12px;
+  display: block;
+  font-family: var(--font-stack-body);
+  font-weight: var(--font-weight-body);
+  font-style: var(--font-style-body);
+  font-size: calc(13px / 14 * var(--base-body-size) + 0px);
+  line-height: 1;
+  text-transform: capitalize;
+}
+.localization-form-holder .regular-select-content {
+  list-style: none;
+  background-color: rgba(var(--color-footer-bg), 1);
+  position: relative;
+  overflow: hidden;
+  top: -2px;
+  height: auto;
+  border-color: rgba(var(--color-footer-txt), 0.16);
+  margin: 0;
+  text-transform: capitalize;
+  display: none;
+  width: 100%;
+  left: 0px !important;
+  right: auto !important;
+  max-height: 360px;
+  overflow-y: auto;
+}
+.localization-form-holder .regular-select-cover:hover .regular-select-content,
+.localization-form-holder .content-opened.regular-select-content {
+  border-color: rgba(var(--color-footer-txt), 0.28);
+}
+.localization-form-holder .content-opened.regular-select-content {
+  position: absolute;
+  top: 43px;
+  display: block;
+}
+.localization-form-holder .content-opened.invert-with-fixed.regular-select-content,
+.localization-form-holder .content-opened.invert-permanent.regular-select-content {
+  top: auto;
+  bottom: 43px;
+  border-top: 1px solid rgba(var(--color-footer-txt), 0.28);
+}
+.localization-form-holder .regular-select-item {
+  height: auto;
+  padding: 0;
+}
+.localization-form-holder .regular-select-item button {
+  background-color: rgba(var(--color-footer-bg), 1);
+  display: block;
+  padding: 13px 12px 11px;
+  color: rgba(var(--color-footer-txt), 1);
+  width: 100%;
+  cursor: pointer;
+  text-transform: capitalize;
+  transition: all 150ms linear;
+  font-family: var(--font-stack-body);
+  font-weight: var(--font-weight-body);
+  font-style: var(--font-style-body);
+  font-size: calc(13px / 14 * var(--base-body-size) + 0px);
+  line-height: 1;
+}
+html[dir=rtl] .localization-form-holder .regular-select-item button {
+  text-align: right;
+}
+html[dir=ltr] .localization-form-holder .regular-select-item button {
+  text-align: left;
+}
+.no-touchevents .localization-form-holder .regular-select-item:hover button,
+.localization-form-holder .regular-select-item button:focus {
+  background-color: rgba(var(--color-footer-txt), 0.08);
+}
+.localization-form-holder .regular-select-item.regular-select-item--selected button {
+  background-color: rgba(var(--color-footer-txt), 0.16) !important;
+}
+.sidebar .localization-form-holder {
+  padding: 50px 14% 20px;
+  transition: all 80ms linear 140ms;
+}
+@media screen and (max-width: 948px) {
+  .sidebar .localization-form-holder {
+    padding: 50px 30px 0;
+  }
+}
+.sidebar .localization-form-holder .localization-form {
+  flex-direction: column-reverse;
+}
+.sidebar .localization-form-holder .regular-select-cover {
+  background-color: rgba(var(--color-sidebar-bg), 1);
+  color: rgba(var(--color-sidebar-txt), 1);
+  border-color: rgba(var(--color-sidebar-txt), 0.16);
+}
+.no-touchevents .sidebar .localization-form-holder .regular-select-cover:hover, .sidebar .localization-form-holder .regular-select-cover:focus-visible, .sidebar .localization-form-holder .regular-select-cover[aria-expanded=true] {
+  border-color: rgba(var(--color-sidebar-txt), 0.28);
+}
+.sidebar .localization-form-holder .regular-select-cover path {
+  fill: rgba(var(--color-sidebar-txt), 0.46);
+}
+.sidebar .localization-form-holder .regular-select-inner {
+  color: rgba(var(--color-sidebar-txt), 1);
+}
+html[dir=rtl] .sidebar .localization-form-holder .regular-select-inner {
+  padding-left: 35px;
+}
+html[dir=ltr] .sidebar .localization-form-holder .regular-select-inner {
+  padding-right: 35px;
+}
+.sidebar .localization-form-holder .regular-select-content {
+  background-color: rgba(var(--color-sidebar-bg), 1);
+  border-color: rgba(var(--color-sidebar-txt), 0.16);
+}
+.sidebar .localization-form-holder .no-touchevents .regular-select-cover:hover.regular-select-content,
+.sidebar .localization-form-holder .regular-select-cover:focus-visible .regular-select-content,
+.sidebar .localization-form-holder .content-opened.regular-select-content {
+  border-color: rgba(var(--color-sidebar-txt), 0.28);
+}
+.sidebar .localization-form-holder .content-opened.invert-permanent.regular-select-content {
+  border-color: 1px solid rgba(var(--color-sidebar-txt), 0.28);
+}
+.sidebar .localization-form-holder .regular-select-item button {
+  color: rgba(var(--color-sidebar-txt), 1);
+  background-color: rgba(var(--color-sidebar-bg), 1);
+}
+.no-touchevents .sidebar .localization-form-holder .regular-select-item:hover button,
+.sidebar .localization-form-holder .regular-select-item button:focus-visible {
+  background-color: rgba(var(--color-sidebar-txt), 0.12);
+}
+.sidebar .localization-form-holder .regular-select-item.regular-select-item--selected button {
+  background-color: rgba(var(--color-sidebar-txt), 0.06);
+}
+.sidebar .localization-form-holder .content-opened:not(.invert-permanent).regular-select-item:first-child {
+  border-color: 1px solid rgba(var(--color-sidebar-txt), 0.28);
+}
+.sidebar.no-transforms .localization-form-holder {
+  opacity: 0;
+  visibility: hidden;
+  transition: all 100ms linear;
+}

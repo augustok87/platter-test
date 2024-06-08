@@ -1,0 +1,172 @@
+{%- assign headings_font = settings.headings_font -%}
+{%- assign body_font = settings.body_font -%}
+
+{%- unless headings_font.system? -%}
+  <link rel="preload" href="{{ headings_font | font_url }}" as="font" type="font/woff2" crossorigin>
+{%- endunless -%}
+
+{%- unless body_font.system? -%}
+  <link rel="preload" href="{{ body_font | font_url }}" as="font" type="font/woff2" crossorigin>
+{%- endunless -%}
+
+<style type="text/css">
+
+  {%- liquid
+
+    assign color_sidebar_bg = settings.sidebar_bg
+    assign color_sidebar_mobile_border = settings.sidebar_bg | color_darken: 12
+
+    assign color_sidebar_txt = settings.sidebar_txt
+    assign color_sidebar_txt_brightness = color_sidebar_txt | color_brightness
+    if color_sidebar_txt_brightness > 150
+      assign color_sidebar_txt_foreground = '#000'
+    else
+      assign color_sidebar_txt_foreground = '#fff'
+    endif
+
+    assign color_sidebar_accent = settings.sidebar_accent
+    assign color_sidebar_accent_brightness = color_sidebar_accent | color_brightness
+    if color_sidebar_accent_brightness > 150
+      assign color_sidebar_accent_foreground = '#000'
+    else
+      assign color_sidebar_accent_foreground = '#fff'
+    endif
+
+    assign color_body_bg = settings.body_bg
+
+    assign color_body_txt = settings.body_txt
+    assign color_body_txt_brightness = color_body_txt | color_brightness
+    if color_body_txt_brightness > 150
+      assign color_body_txt_foreground = '#000'
+    else
+      assign color_body_txt_foreground = '#fff'
+    endif
+
+    assign color_body_accent = settings.body_accent
+    assign color_body_accent_brightness = color_body_accent | color_brightness
+    if color_body_accent_brightness > 150
+      assign color_body_accent_foreground = '#000'
+    else
+      assign color_body_accent_foreground = '#fff'
+    endif
+
+    assign color_footer_bg = settings.footer_bg
+    assign color_footer_txt = settings.footer_txt
+    assign color_footer_accent = settings.footer_accent
+
+    echo headings_font | font_face: font_display: 'swap'
+
+    echo body_font | font_face: font_display: 'swap'
+
+    assign body_font_medium = body_font | font_modify: 'weight', '500'
+    assign body_font_semibold = body_font | font_modify: 'weight', '600'
+    assign body_font_bold = body_font | font_modify: 'weight', '700'
+    assign body_font_italic = body_font | font_modify: 'style', 'italic'
+    assign body_font_bold_italic = body_font_bold | font_modify: 'style', 'italic'
+
+    if body_font_medium
+      echo body_font_medium | font_face: font_display: 'swap'
+    endif
+
+    if body_font_semibold
+      echo body_font_semibold | font_face: font_display: 'swap'
+    endif
+
+    if body_font_bold
+      echo body_font_bold | font_face: font_display: 'swap'
+    endif
+
+    if body_font_italic
+      echo body_font_italic | font_face: font_display: 'swap'
+    endif
+
+    if body_font_bold_italic
+      echo body_font_bold_italic | font_face: font_display: 'swap'
+    endif
+
+  -%}
+
+  :root {
+
+    /* Color variables - SIDEBAR */
+
+    --color-sidebar-bg: {{ color_sidebar_bg | color_extract: 'red' }}, {{ color_sidebar_bg | color_extract: 'green' }}, {{ color_sidebar_bg | color_extract: 'blue' }};
+    --color-sidebar-mobile-border: {{ color_sidebar_mobile_border }};
+
+    --color-sidebar-txt: {{ color_sidebar_txt | color_extract: 'red' }}, {{ color_sidebar_txt | color_extract: 'green' }}, {{ color_sidebar_txt | color_extract: 'blue' }};
+    --color-sidebar-txt-foreground: {{ color_sidebar_txt_foreground | color_extract: 'red' }}, {{ color_sidebar_txt_foreground | color_extract: 'green' }}, {{ color_sidebar_txt_foreground | color_extract: 'blue' }};
+
+    --color-sidebar-accent: {{ color_sidebar_accent | color_extract: 'red' }}, {{ color_sidebar_accent | color_extract: 'green' }}, {{ color_sidebar_accent | color_extract: 'blue' }};
+    --color-sidebar-accent-foreground: {{ color_sidebar_accent_foreground | color_extract: 'red' }}, {{ color_sidebar_accent_foreground | color_extract: 'green' }}, {{ color_sidebar_accent_foreground | color_extract: 'blue' }};
+
+    /* Color variables - BODY */
+
+    --color-body-bg: {{ color_body_bg | color_extract: 'red' }}, {{ color_body_bg | color_extract: 'green' }}, {{ color_body_bg | color_extract: 'blue' }};
+
+    --color-body-txt: {{ color_body_txt | color_extract: 'red' }}, {{ color_body_txt | color_extract: 'green' }}, {{ color_body_txt | color_extract: 'blue' }};
+    --color-body-txt-foreground: {{ color_body_txt_foreground | color_extract: 'red' }}, {{ color_body_txt_foreground | color_extract: 'green' }}, {{ color_body_txt_foreground | color_extract: 'blue' }};
+
+    --color-body-accent: {{ color_body_accent | color_extract: 'red' }}, {{ color_body_accent | color_extract: 'green' }}, {{ color_body_accent | color_extract: 'blue' }};
+    --color-body-accent-foreground: {{ color_body_accent_foreground | color_extract: 'red' }}, {{ color_body_accent_foreground | color_extract: 'green' }}, {{ color_body_accent_foreground | color_extract: 'blue' }};
+
+    /* Color variables - FOOTER */
+
+    --color-footer-bg: {{ color_footer_bg | color_extract: 'red' }}, {{ color_footer_bg | color_extract: 'green' }}, {{ color_footer_bg | color_extract: 'blue' }};
+    --color-footer-txt: {{ color_footer_txt | color_extract: 'red' }}, {{ color_footer_txt | color_extract: 'green' }}, {{ color_footer_txt | color_extract: 'blue' }};
+    --color-footer-accent: {{ color_footer_accent | color_extract: 'red' }}, {{ color_footer_accent | color_extract: 'green' }}, {{ color_footer_accent | color_extract: 'blue' }};
+
+    /* Color variables - SPI */
+
+    --color-body-text: {{ settings.body_txt }};
+    --color-body: {{ settings.body_bg }};
+    --color-bg: {{ settings.body_bg }};
+
+    /* Font variables */
+
+    --base-headings-size: {{ settings.headings_size }};
+    --base-body-size: {{ settings.body_size }};
+    --base-body-size-alt: {{ settings.body_size_alt }};
+
+    --font-stack-headings: {{ headings_font.family }}, {{ headings_font.fallback_families }};
+    --font-weight-headings: {{ headings_font.weight }};
+    --font-style-headings: {{ headings_font.style }};
+
+    --font-stack-body: {{ body_font.family }}, {{ body_font.fallback_families }};
+    --font-weight-body: {{ body_font.weight }};
+    --font-style-body: {{ body_font.style }};
+
+    {%- if body_font_medium -%}
+      --font-weight-body-medium: 500; 
+    {%- elsif body_font_semibold %}
+      --font-weight-body-medium: 600;
+    {% elsif body_font_bold %}
+      --font-weight-body-medium: 700;
+    {%- endif -%}
+
+    {%- if body_font_semibold -%}
+      --font-weight-body-semibold: 600; 
+    {%- else %}
+      --font-weight-body-semibold: 700;
+    {% endif %}
+
+    --font-weight-body-bold: 700;
+
+    /* Layout */
+    --vertical-padding-base: {{ settings.layout_vertical_space }}px;
+    --horizontal-padding-base: {{ settings.layout_horizontal_space }}px;
+    --grid-gutter-base: {{ settings.layout_grid_space }}px;
+
+  }
+
+  select, .regular-select-cover {
+    background-image: url("data:image/svg+xml,%3Csvg class='svg symbol symbol--arrow' xmlns='http://www.w3.org/2000/svg' width='24' height='24' fill='none'%3E%3Cpath fill-rule='evenodd' d='M13.828 14.414l4-4L16.414 9l-4 4-4-4L7 10.414l5.414 5.414 1.414-1.414z' fill='{{ settings.body_txt | url_encode }}'%3E%3C/path%3E%3C/svg%3E") !important;
+  }
+  .sidebar-element .regular-select-cover,
+  .sidebar-element select {
+    background-image: url("data:image/svg+xml,%3Csvg class='svg symbol symbol--arrow' xmlns='http://www.w3.org/2000/svg' width='24' height='24' fill='none'%3E%3Cpath fill-rule='evenodd' d='M13.828 14.414l4-4L16.414 9l-4 4-4-4L7 10.414l5.414 5.414 1.414-1.414z' fill='{{ settings.sidebar_txt | url_encode }}'%3E%3C/path%3E%3C/svg%3E") !important;
+  }
+  .footer .regular-select-cover {
+    background-image: url("data:image/svg+xml,%3Csvg class='svg symbol symbol--arrow' xmlns='http://www.w3.org/2000/svg' width='24' height='24' fill='none'%3E%3Cpath fill-rule='evenodd' d='M13.828 14.414l4-4L16.414 9l-4 4-4-4L7 10.414l5.414 5.414 1.414-1.414z' fill='{{ settings.footer_txt | url_encode }}'%3E%3C/path%3E%3C/svg%3E") !important;
+  }
+  
+</style>

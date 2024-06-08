@@ -1,0 +1,113 @@
+<div class="compact-header">
+
+  <div class="compact-header-container">
+
+    {%- render 'breadcrumb' -%}
+		<h1 class="blog-header__title h0">{{ blog.title | escape }}</h1>
+
+    {%- if section.settings.enable_tags -%}
+      <div class="blog-tags">
+        <a class="button--smallest {% if current_tags == blank %} button--solid {% else %} button--outline {% endif %}" href="{{ blog.url }}">{{ 'blog.grid.tags_dropdown.all' | t }}</a>
+        {%- for tag in blog.all_tags -%}
+          <a class="button--smallest {% if current_tags contains tag %} button--solid {% else %} button--outline {% endif %}" href="{{ blog.url }}/tagged/{{ tag.handle }}">
+            {{ tag | capitalize }}
+          </a>
+        {%- endfor -%}
+      </div>
+    {%- endif -%}
+
+	</div>
+
+</div>
+
+{%- paginate blog.articles by section.settings.post_limit -%}
+
+  <div class="blog--grid cols-2 full-width-section-content blog--images-{{ section.settings.show_image }} gutter--on">
+
+    {{ 'component-blog-item.css' | asset_url | stylesheet_tag }}
+
+		{% for article in blog.articles %}
+			{%- render 'blog-item', article: article, layout: 'cols-2', show_image: section.settings.show_image, blocks: section.blocks, index: forloop.index -%}
+		{%- else -%}
+      <p class="no-content-message">{{ 'blog.grid.no_articles_text' | t }}</p>
+		{%- endfor -%}
+
+  </div>
+
+  {%- liquid
+    if paginate.pages > 1
+      render 'pagination', paginate: paginate
+    endif
+  -%}
+
+{%- endpaginate -%}
+
+{% schema %}
+  {
+    "name": "t:sections.blog-posts.name",
+    "class": "mount-blog-page overflow-hidden",
+    "blocks": [
+      {
+        "type": "title",
+        "name": "t:sections.blog-posts.blocks.title.name",
+        "limit": 1
+      },
+      {
+        "type": "info",
+        "name": "t:sections.blog-posts.blocks.info.name",
+        "limit": 1,
+        "settings": [
+          {
+            "type": "checkbox",
+            "id": "show_date",
+            "label": "t:sections.blog-posts.blocks.info.settings.show_date.label",
+            "default": true
+          },
+          {
+            "type": "checkbox",
+            "id": "show_author",
+            "label": "t:sections.blog-posts.blocks.info.settings.show_author.label",
+            "default": false
+          }
+        ]
+      },
+      {
+        "type": "summary",
+        "name": "t:sections.blog-posts.blocks.summary.name",
+        "limit": 1
+      },
+      {
+        "type": "link",
+        "name": "t:sections.blog-posts.blocks.link.name",
+        "limit": 1
+      }
+    ],
+    "settings": [
+      {
+        "type": "checkbox",
+        "id": "enable_tags",
+        "label": "t:sections.main-blog.settings.enable_tags.label",
+        "default": false
+      },
+      {
+        "type": "range",
+        "id": "post_limit",
+        "label": "t:sections.main-blog.settings.post_limit.label",
+        "min": 2,
+        "max": 24,
+        "step": 2,
+        "default": 8
+      },
+      {
+        "type": "header",
+        "content": "t:sections.main-blog.settings.header.content"
+      },
+      {
+        "type": "checkbox",
+        "id": "show_image",
+        "label": "t:sections.blog-posts.settings.show_image.label",
+        "default": true
+      }
+    ]
+  }
+{% endschema %}

@@ -1,0 +1,178 @@
+.rich-text__media {
+  position: sticky;
+  top: 0;
+}
+
+.rich-text {
+  display: flex;
+}
+.rich-text svg * {
+  stroke: rgba(var(--color-body-txt), 1);
+}
+
+.rich-text__button,
+.rich-text__body,
+.rich-text__icon {
+  margin-bottom: 2em;
+}
+
+.rich-text__title:first-child:last-child {
+  margin-bottom: 0;
+}
+
+.rich-text__content > *:last-child,
+.rich-text__title > *:last-child {
+  margin-bottom: 0;
+}
+
+.rich-text__media {
+  width: 50%;
+  max-height: 100vh;
+  position: relative;
+  flex-shrink: 0;
+}
+
+.rich-text__icon {
+  display: flex;
+}
+.rich-text--text-right .rich-text__icon {
+  justify-content: flex-end;
+}
+.rich-text--text-center .rich-text__icon {
+  justify-content: center;
+}
+.rich-text--text-left .rich-text__icon {
+  justify-content: flex-start;
+}
+.rich-text__icon img, .rich-text__icon svg {
+  width: 64px;
+  height: 64px;
+}
+.rich-text__icon svg {
+  stroke-width: 2px;
+}
+
+.rich-text--media-on .rich-text__content {
+  width: 50%;
+}
+html[dir=rtl] .rich-text--media-on .rich-text__content {
+  padding-left: var(--horizontal-padding);
+}
+html[dir=ltr] .rich-text--media-on .rich-text__content {
+  padding-right: var(--horizontal-padding);
+}
+.rich-text--media-on.rich-text--align-right .rich-text__content {
+  order: 2;
+}
+html[dir=rtl] .rich-text--media-on.rich-text--align-right .rich-text__content {
+  padding-right: var(--horizontal-padding);
+  padding-left: 0;
+}
+html[dir=ltr] .rich-text--media-on.rich-text--align-right .rich-text__content {
+  padding-left: var(--horizontal-padding);
+  padding-right: 0;
+}
+.rich-text--media-on .rich-text__content > *:last-child {
+  padding-bottom: 100px;
+}
+.rich-text--media-on.rich-text--text-center {
+  text-align: center;
+}
+html[dir=rtl] .rich-text--media-on.rich-text--text-right {
+  text-align: left;
+}
+html[dir=ltr] .rich-text--media-on.rich-text--text-right {
+  text-align: right;
+}
+html[dir=rtl] .rich-text--media-on.rich-text--text-left {
+  text-align: right;
+}
+html[dir=ltr] .rich-text--media-on.rich-text--text-left {
+  text-align: left;
+}
+
+.rich-text--media-off.rich-text--text-left {
+  justify-content: flex-start;
+}
+html[dir=rtl] .rich-text--media-off.rich-text--text-left {
+  text-align: right;
+}
+html[dir=ltr] .rich-text--media-off.rich-text--text-left {
+  text-align: left;
+}
+.rich-text--media-off.rich-text--text-center {
+  text-align: center;
+  justify-content: center;
+}
+.rich-text--media-off.rich-text--text-right {
+  justify-content: flex-end;
+}
+html[dir=rtl] .rich-text--media-off.rich-text--text-right {
+  text-align: left;
+}
+html[dir=ltr] .rich-text--media-off.rich-text--text-right {
+  text-align: right;
+}
+html[dir=rtl] .rich-text--media-off .rich-text__content {
+  padding-left: 0 !important;
+}
+html[dir=ltr] .rich-text--media-off .rich-text__content {
+  padding-right: 0 !important;
+}
+.rich-text--media-off.gutter--on {
+  padding-left: 0;
+  padding-right: 0;
+}
+
+.rich-text.gutter--on.rich-text--media-on .rich-text__content {
+  padding-top: 100px;
+}
+
+.rich-text.gutter--off {
+  padding-top: 0;
+  padding-bottom: 0;
+}
+.rich-text.gutter--off .rich-text__content {
+  padding-top: 100px;
+}
+html[dir=rtl] .rich-text.gutter--off.rich-text--align-left .rich-text__content {
+  padding-right: var(--horizontal-padding);
+}
+html[dir=ltr] .rich-text.gutter--off.rich-text--align-left .rich-text__content {
+  padding-left: var(--horizontal-padding);
+}
+html[dir=rtl] .rich-text.gutter--off.rich-text--align-right .rich-text__content {
+  padding-left: var(--horizontal-padding);
+}
+html[dir=ltr] .rich-text.gutter--off.rich-text--align-right .rich-text__content {
+  padding-right: var(--horizontal-padding);
+}
+
+html[dir=rtl] .rich-text.gutter--on.rich-text--media-on.rich-text--align-right .rich-text__content {
+  padding-left: var(--horizontal-padding);
+}
+html[dir=ltr] .rich-text.gutter--on.rich-text--media-on.rich-text--align-right .rich-text__content {
+  padding-right: var(--horizontal-padding);
+}
+html[dir=rtl] .rich-text.gutter--on.rich-text--media-on.rich-text--align-left .rich-text__content {
+  padding-right: var(--horizontal-padding);
+}
+html[dir=ltr] .rich-text.gutter--on.rich-text--media-on.rich-text--align-left .rich-text__content {
+  padding-left: var(--horizontal-padding);
+}
+
+@media screen and (max-width: 648px) {
+  .rich-text {
+    flex-direction: column;
+  }
+  .rich-text .rich-text__content {
+    width: 100%;
+    order: 1;
+  }
+  .rich-text .rich-text__media {
+    width: 100%;
+    height: 50vh !important;
+    position: relative;
+    order: 2;
+  }
+}

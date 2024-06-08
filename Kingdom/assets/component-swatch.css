@@ -1,0 +1,78 @@
+.swatch-list {
+  display: flex;
+  align-items: start;
+  flex-wrap: wrap;
+  gap: 0.625rem;
+}
+.facets__form--horizontal .swatch-list {
+  display: grid;
+  min-width: 23.4375rem;
+  grid-template-columns: repeat(4, 25%);
+  justify-content: center;
+}
+.facets__form--horizontal .swatch-list li {
+  width: auto;
+}
+.swatch-list label.facet-checkbox {
+  grid-template-columns: 100%;
+  justify-items: center;
+}
+.swatch-list__item {
+  margin: 0 !important;
+  position: relative;
+  width: 20%;
+  min-width: 3.5rem;
+  text-align: center;
+  line-height: 1;
+  flex-shrink: 0;
+}
+.swatch-list__item label {
+  display: flex;
+  flex-wrap: wrap;
+  justify-content: center;
+  gap: 0.3125rem;
+}
+.swatch-list__item input {
+  display: none;
+}
+.swatch-list__item:hover .swatch-list__item-image,
+.swatch-list__item:hover .swatch-list__item-color {
+  border-color: rgba(var(--color-body-txt), 1);
+}
+.sidebar-element .swatch-list__item:hover .swatch-list__item-image,
+.sidebar-element .swatch-list__item:hover .swatch-list__item-color {
+  border-color: rgba(var(--color-sidebar-txt), 1);
+}
+.swatch-list__item .styled-checkbox {
+  display: none;
+}
+.swatch-list__item .styled-checkbox:checked + .swatch-list__item-color, .swatch-list__item .styled-checkbox:checked + .swatch-list__item-image {
+  border-color: rgba(var(--color-body-txt), 1);
+}
+.sidebar-element .swatch-list__item .styled-checkbox:checked + .swatch-list__item-color, .sidebar-element .swatch-list__item .styled-checkbox:checked + .swatch-list__item-image {
+  border-color: rgba(var(--color-sidebar-txt), 1);
+}
+.swatch-list__item-image, .swatch-list__item-color {
+  border-radius: 50%;
+  overflow: hidden;
+  position: relative;
+  border: 2px solid rgba(var(--color-body-txt), 0.36);
+  width: 3.375rem;
+  height: 3.375rem;
+}
+.sidebar-element .swatch-list__item-image, .sidebar-element .swatch-list__item-color {
+  border: 2px solid rgba(var(--color-sidebar-txt), 0.36);
+}
+.swatch-list__item-image:after, .swatch-list__item-color:after {
+  content: "";
+  display: inline-block;
+  padding-top: 100%;
+}
+.swatch-list__item-image img, .swatch-list__item-color img {
+  position: absolute;
+  top: 50%;
+  left: 50%;
+  transform: translate(-50%, -50%);
+  min-width: 100%;
+  min-height: 100%;
+}

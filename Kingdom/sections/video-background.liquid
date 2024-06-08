@@ -1,0 +1,415 @@
+{{ 'section-video-background.css' | asset_url | stylesheet_tag }}
+
+<div id="video-background-{{ section.id }}" class="full-width-section-content content-section gutter--{% if section.settings.gutter_enabled %}on{% else %}off{% endif %} video-text" style="display:block">
+
+  <script class="gutter-script">
+    {%- if section.settings.gutter_enabled -%}
+      document.getElementById('video-background-{{ section.id }}').parentElement.classList.add('with-gutter');
+    {%- else -%}
+      document.getElementById('video-background-{{ section.id }}').parentElement.classList.add('without-gutter');
+    {%- endif -%}
+  </script>
+
+  <div class="video-text__container ">
+    <div class="video-text__content aligned-text-content {{ section.settings.text_alignment }}">
+      <div>
+
+        {%- for block in section.blocks -%}
+
+          {%- case block.type -%}
+
+            {%- when 'heading' -%}
+              <{{ block.settings.seo_h_tag }} class="video-text__title {% if block.settings.heading_size == 'regular' %} h1 {% elsif block.settings.heading_size == 'large' %} h0 {% else %} hh {% endif %}">{{ block.settings.heading | escape }}</{{ block.settings.seo_h_tag }}>
+
+            {%- when 'text' -%}
+              <div class="video-text__body {% if block.settings.text_size == 'large' %} h2 {% elsif block.settings.text_size == 'huge' %} h1 {% endif %} rte">{{ block.settings.text }}</div>
+
+            {%- when 'button' -%}
+              <div class="video-text__button">
+                <a class="button button--solid button--{{ block.settings.button_size }}" href="{{ block.settings.button_link | escape }}" title="{{ block.settings.button_label }}">{{ block.settings.button_label | escape }}</a>
+              </div>
+
+          {%- endcase -%}
+
+        {%- endfor -%}
+
+      </div>
+    </div>
+  </div>
+
+  {%- unless section.settings.video_object == blank -%}
+
+    <video-background-element class="video-text__background" data-id="{{ section.id }}" data-height="{{ section.settings.video_height }}">
+
+      <video autoplay muted loop playsinline>
+        {%- for source in section.settings.video_object.sources -%}
+          <source data-src="{{ source.url }}" type="{{ source.mime_type }}">
+        {%- endfor -%}
+      </video>
+
+      {%- unless section.settings.image == blank -%}
+        <div data-video-background-fallback data-id="{{ section.id }}">
+          <template>
+            {%- liquid
+              assign sizes = 'sizes="(max-width: 948px) 100vw, calc(100vw - 200px)"'
+              render 'lazy-image', image: section.settings.image, type: 'background', sizes: sizes, image_alignment: true
+            -%}
+          </template>
+        </div>
+      {%- endunless -%}
+      
+    </video-background-element>
+
+  {%- else -%}
+    <div class="video-text__background">
+      <span class="onboarding-svg with-background">{{ 'image' | placeholder_svg_tag }}</span>
+    </div>
+  {%- endunless -%}
+
+  <script src="{{ 'component-video-background.js' | asset_url }}" defer></script>
+  
+</div>
+
+{%- assign color_text = section.settings.color_text -%}
+{%- if color_text != 'rgba(0,0,0,0)' -%}
+
+  {%- liquid
+    assign color_text_brightness = color_text | color_brightness
+    if color_text_brightness > 150
+      assign color_text_foreground = '#000'
+    else
+      assign color_text_foreground = '#fff'
+    endif
+  -%}
+
+  {% style %}
+    #video-background-{{ section.id }}, 
+    #video-background-{{ section.id }} a {
+      color: {{ color_text }};
+    }
+    #video-background-{{ section.id }} a.button--solid {
+      background: {{ color_text }};
+      color: {{ color_text_foreground }};
+    }
+    #video-background-{{ section.id }} .button--solid path {
+      fill: {{ color_text_foreground }};
+    }
+    #video-background-{{ section.id }} .video-text__title span {
+      background-image: linear-gradient(to right, {{ color_text }}, {{ color_text }});
+    }
+  {% endstyle %}
+
+{%- endif -%}
+
+{%- if section.settings.color_bg != 'rgba(0,0,0,0)' -%}
+  {% style %}
+    #video-background-{{ section.id }} .video-text__background:before {
+      background-color: {{ section.settings.color_bg }};
+    }
+  {% endstyle %}
+{%- endif -%}
+
+{% style %}
+  #video-background-{{ section.id }} .video-text__container {
+    padding-top: {{ section.settings.video_height }};
+  }
+  @media all and (max-width: 948px) {
+    #video-background-{{ section.id }} .video-text__container {
+      padding-top: {{ section.settings.video_mobile_height }};
+    }
+  }
+  @media all and (min-width: 768px) {
+    #video-background-{{ section.id }} .video-text__content > div {
+      max-width: {{ section.settings.text_width }};
+    }
+  }
+{% endstyle %}
+
+{% schema %}
+  {
+    "name": "t:sections.video-background.name",
+    "class": "overflow-hidden",
+    "tag": "section",
+    "blocks": [{
+        "type": "heading",
+        "limit": 1,
+        "name": "t:sections.rich-text.blocks.heading.name",
+        "settings": [{
+            "type": "text",
+            "id": "heading",
+            "label": "t:sections.rich-text.blocks.heading.settings.heading.label",
+            "default": "Talk about your brand"
+          },
+          {
+            "type": "select",
+            "id": "heading_size",
+            "label": "t:sections.rich-text.blocks.heading.settings.heading_size.label",
+            "options": [{
+                "value": "regular",
+                "label": "t:sections.rich-text.blocks.heading.settings.heading_size.options__1.label"
+              },
+              {
+                "value": "large",
+                "label": "t:sections.rich-text.blocks.heading.settings.heading_size.options__2.label"
+              },
+              {
+                "value": "huge",
+                "label": "t:sections.rich-text.blocks.heading.settings.heading_size.options__3.label"
+              }
+            ],
+            "default": "regular"
+          },
+          {
+            "type": "select",
+            "id": "seo_h_tag",
+            "label": "t:sections.refactor_words.seo.label",
+            "info": "t:sections.refactor_words.seo.info",
+            "options": [
+              {
+                "value": "h1",
+                "label": "H1"
+              },
+              {
+                "value": "h2",
+                "label": "H2"
+              },
+              {
+                "value": "h3",
+                "label": "H3"
+              },
+              {
+                "value": "h4",
+                "label": "H4"
+              },
+              {
+                "value": "span",
+                "label": "span"
+              }
+            ],
+            "default": "h2"
+          }
+        ]
+      },
+      {
+        "type": "text",
+        "name": "t:sections.rich-text.blocks.text.name",
+        "limit": 1,
+        "settings": [{
+            "type": "richtext",
+            "id": "text",
+            "label": "t:sections.rich-text.blocks.text.settings.text.label",
+            "default": "<p>Use this text to share information about your brand with your customers. Describe a product, share announcements, or welcome customers to your store.</p>"
+          },
+          {
+            "type": "select",
+            "id": "text_size",
+            "label": "t:sections.image-with-text.settings.text_size.label",
+            "options": [{
+                "value": "regular",
+                "label": "t:sections.image-with-text.settings.text_size.options__1.label"
+              },
+              {
+                "value": "large",
+                "label": "t:sections.image-with-text.settings.text_size.options__2.label"
+              },
+              {
+                "value": "huge",
+                "label": "t:sections.image-with-text.settings.text_size.options__3.label"
+              }
+            ],
+            "default": "regular"
+          }
+        ]
+      },
+      {
+        "type": "button",
+        "limit": 1,
+        "name": "t:sections.rich-text.blocks.button.name",
+        "settings": [{
+            "type": "text",
+            "id": "button_label",
+            "label": "t:sections.rich-text.blocks.button.settings.button_label.label",
+            "default": "Button label"
+          },
+          {
+            "type": "url",
+            "id": "button_link",
+            "label": "t:sections.rich-text.blocks.button.settings.button_link.label"
+          },
+          {
+            "type": "select",
+            "id": "button_size",
+            "label": "t:sections.rich-text.blocks.button.settings.button_size.label",
+            "options": [{
+                "value": "regular",
+                "label": "t:sections.rich-text.blocks.button.settings.button_size.options__1.label"
+              },
+              {
+                "value": "large",
+                "label": "t:sections.rich-text.blocks.button.settings.button_size.options__2.label"
+              }
+            ],
+            "default": "regular"
+          }
+        ]
+      }
+    ],
+    "settings": [
+      {
+        "type": "video",
+        "id": "video_object",
+        "label": "t:sections.local-extra-words.sections.media-with-text-overlay.blocks.video.label"
+      },
+      {
+        "type": "image_picker",
+        "id": "image",
+        "label": "t:sections.video-background.settings.image.label"
+      },
+      {
+        "type": "header",
+        "content": "t:sections.video-background.settings.size_alignment.content"
+      },
+      {
+        "type": "select",
+        "id": "video_height",
+        "label": "t:sections.video-background.settings.video_height.label",
+        "options": [{
+            "value": "56.25%",
+            "label": "t:sections.video-background.settings.video_height.options__1.label",
+            "group": "t:sections.video-background.settings.video_height.options__1.group"
+          },
+          {
+            "value": "70vh",
+            "label": "t:sections.video-background.settings.video_height.options__2.label",
+            "group": "t:sections.video-background.settings.video_height.options__2.group"
+          },
+          {
+            "value": "100vh",
+            "label": "t:sections.video-background.settings.video_height.options__3.label",
+            "group": "t:sections.video-background.settings.video_height.options__2.group"
+          }
+        ],
+        "default": "56.25%"
+      },
+      {
+        "type": "select",
+        "id": "video_mobile_height",
+        "label": "t:sections.video-background.settings.video_mobile_height.label",
+        "options": [{
+            "value": "56.25%",
+            "label": "t:sections.video-background.settings.video_height.options__1.label",
+            "group": "t:sections.video-background.settings.video_height.options__1.group"
+          },
+          {
+            "value": "70vh",
+            "label": "t:sections.video-background.settings.video_height.options__2.label",
+            "group": "t:sections.video-background.settings.video_height.options__2.group"
+          },
+          {
+            "value": "100vh",
+            "label": "t:sections.video-background.settings.video_height.options__3.label",
+            "group": "t:sections.video-background.settings.video_height.options__2.group"
+          }
+        ],
+        "default": "56.25%"
+      },
+      {
+        "type": "select",
+        "id": "text_width",
+        "label": "t:sections.image-with-text.settings.text_width.label",
+        "options": [{
+            "value": "50%",
+            "label": "t:sections.image-with-text.settings.text_width.options__1.label"
+          },
+          {
+            "value": "75%",
+            "label": "t:sections.image-with-text.settings.text_width.options__2.label"
+          },
+          {
+            "value": "100%",
+            "label": "t:sections.image-with-text.settings.text_width.options__3.label"
+          }
+        ],
+        "default": "50%"
+      },
+      {
+        "type": "select",
+        "id": "text_alignment",
+        "label": "t:sections.image-with-text.settings.text_alignment.label",
+        "options": [{
+            "value": "horizontal-left vertical-top",
+            "label": "t:sections.image-with-text.settings.text_alignment.options__1.label"
+          },
+          {
+            "value": "horizontal-center vertical-top",
+            "label": "t:sections.image-with-text.settings.text_alignment.options__2.label"
+          },
+          {
+            "value": "horizontal-right vertical-top",
+            "label": "t:sections.image-with-text.settings.text_alignment.options__3.label"
+          },
+          {
+            "value": "horizontal-left vertical-middle",
+            "label": "t:sections.image-with-text.settings.text_alignment.options__4.label"
+          },
+          {
+            "value": "horizontal-center vertical-middle",
+            "label": "t:sections.image-with-text.settings.text_alignment.options__5.label"
+          },
+          {
+            "value": "horizontal-right vertical-middle",
+            "label": "t:sections.image-with-text.settings.text_alignment.options__6.label"
+          },
+          {
+            "value": "horizontal-left vertical-bottom",
+            "label": "t:sections.image-with-text.settings.text_alignment.options__7.label"
+          },
+          {
+            "value": "horizontal-center vertical-bottom",
+            "label": "t:sections.image-with-text.settings.text_alignment.options__8.label"
+          },
+          {
+            "value": "horizontal-right vertical-bottom",
+            "label": "t:sections.image-with-text.settings.text_alignment.options__9.label"
+          }
+        ],
+        "default": "horizontal-left vertical-bottom"
+      },
+      {
+        "type": "header",
+        "content": "t:settings_schema.colors.name"
+      },
+      {
+        "type": "color",
+        "id": "color_text",
+        "label": "t:sections.custom-colors.text.label",
+        "default": "rgba(0,0,0,0)"
+      },
+      {
+        "type": "color",
+        "id": "color_bg",
+        "label": "t:sections.custom-colors.overlay.label",
+        "default": "rgba(0,0,0,0)"
+      },
+      {
+        "type": "header",
+        "content": "t:sections.custom-gutter.heading.content"
+      },
+      {
+        "type": "checkbox",
+        "id": "gutter_enabled",
+        "label": "t:sections.custom-gutter.gutter_enabled.label"
+      }
+    ],
+    "presets": [{
+      "name": "t:sections.video-background.name",
+      "blocks": [{
+          "type": "heading"
+        },
+        {
+          "type": "text"
+        }
+      ]
+    }]
+  }
+{% endschema %}

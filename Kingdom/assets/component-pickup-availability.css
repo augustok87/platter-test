@@ -1,0 +1,235 @@
+.pickup-availability-preview {
+  display: block;
+  margin-bottom: 38px;
+}
+
+.store-availability-information {
+  display: flex;
+  margin-top: 38px;
+}
+html[dir=rtl] .store-availability-information {
+  text-align: right;
+}
+html[dir=ltr] .store-availability-information {
+  text-align: left;
+}
+.store-availability-information-container {
+  margin-inline-start: 5px;
+}
+.store-availability-information__title {
+  margin-bottom: 0;
+  line-height: 1.3;
+}
+.store-availability-information__stock {
+  margin-bottom: 0;
+  margin-top: 12px;
+}
+.store-availability-information__stores {
+  margin-top: 18px;
+  margin-bottom: 0;
+}
+.store-availability-information__stores a {
+  border-bottom: 1px solid;
+}
+@media screen and (max-width: 768px) {
+  .store-availability-information {
+    margin-bottom: -12px;
+  }
+}
+.store-availability__link {
+  text-decoration: underline;
+  cursor: pointer;
+}
+.store-availability-list__stock .icon {
+  margin: 0 2px 3px 0;
+}
+.store-availability-container .icon {
+  width: 12px;
+  height: 12px;
+  margin: 2px 4px 0 0;
+}
+.store-availability-container .icon-in-stock path {
+  fill: #00730B;
+}
+.store-availability-container .icon-out-of-stock path {
+  fill: #DD2200;
+}
+
+#StoreAvailabilityModal .top {
+  border-top: 1px solid rgba(var(--color-sidebar-txt), 0.06);
+}
+@media screen and (min-width: 1921px) {
+  #StoreAvailabilityModal .title {
+    font-size: calc(18px / 14 * var(--base-body-size) + 0px);
+    line-height: 1.7;
+  }
+}
+@media screen and (min-width: 1280px) and (max-width: 1920px) {
+  #StoreAvailabilityModal .title {
+    font-size: calc(17px / 14 * var(--base-body-size) + 0px);
+    line-height: 1.7;
+  }
+}
+@media screen and (min-width: 1023px) and (max-width: 1280px) {
+  #StoreAvailabilityModal .title {
+    font-size: calc(16px / 14 * var(--base-body-size) + 0px);
+    line-height: 1.7;
+  }
+}
+@media screen and (max-width: 1023px) {
+  #StoreAvailabilityModal .title {
+    font-size: calc(15px / 14 * var(--base-body-size) + 0px);
+    line-height: 1.7;
+  }
+}
+#StoreAvailabilityModal .site-cart-heading {
+  padding-bottom: 24px;
+}
+
+.sidebar__pickup {
+  width: 450px;
+  z-index: 999;
+}
+html[dir=rtl] .sidebar__pickup {
+  left: 0;
+  right: auto;
+}
+html[dir=ltr] .sidebar__pickup {
+  right: 0;
+  left: auto;
+}
+.sidebar__pickup .locals__title {
+  border-bottom: 1px solid rgba(var(--color-sidebar-txt), 0.06);
+  background: rgba(var(--color-sidebar-bg), 1);
+}
+
+.store-availabilities-list {
+  list-style: none;
+}
+
+.store-availability-list__item {
+  padding-top: 30px !important;
+  padding-bottom: 30px !important;
+  border-bottom: 1px solid rgba(var(--color-sidebar-txt), 0.06);
+}
+.store-availability-list-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: baseline;
+  margin-bottom: 8px;
+}
+.store-availability-list-header__location, .store-availability-list-header__distance {
+  margin-bottom: 0;
+}
+@media screen and (min-width: 1921px) {
+  .store-availability-list-header__location, .store-availability-list-header__distance {
+    font-size: calc(17px / 14 * var(--base-body-size) + 0px);
+    line-height: 1.7;
+  }
+}
+@media screen and (min-width: 1280px) and (max-width: 1920px) {
+  .store-availability-list-header__location, .store-availability-list-header__distance {
+    font-size: calc(16px / 14 * var(--base-body-size) + 0px);
+    line-height: 1.7;
+  }
+}
+@media screen and (min-width: 1023px) and (max-width: 1280px) {
+  .store-availability-list-header__location, .store-availability-list-header__distance {
+    font-size: calc(15px / 14 * var(--base-body-size) + 0px);
+    line-height: 1.7;
+  }
+}
+@media screen and (max-width: 1023px) {
+  .store-availability-list-header__location, .store-availability-list-header__distance {
+    font-size: calc(14px / 14 * var(--base-body-size) + 0px);
+    line-height: 1.7;
+  }
+}
+.store-availability-list__stock {
+  margin-top: 8px;
+  margin-bottom: 16px;
+  display: block;
+  line-height: 1.3;
+}
+@media screen and (min-width: 1921px) {
+  .store-availability-list__stock {
+    font-size: calc(16px / 14 * var(--base-body-size) + 0px);
+    line-height: 1.7;
+  }
+}
+@media screen and (min-width: 1280px) and (max-width: 1920px) {
+  .store-availability-list__stock {
+    font-size: calc(15px / 14 * var(--base-body-size) + 0px);
+    line-height: 1.7;
+  }
+}
+@media screen and (min-width: 1023px) and (max-width: 1280px) {
+  .store-availability-list__stock {
+    font-size: calc(14px / 14 * var(--base-body-size) + 0px);
+    line-height: 1.7;
+  }
+}
+@media screen and (max-width: 1023px) {
+  .store-availability-list__stock {
+    font-size: calc(13px / 14 * var(--base-body-size) + 0px);
+    line-height: 1.7;
+  }
+}
+.store-availability-list__address, .store-availability-list__phone, .store-availability-list__invalid {
+  margin-inline-start: 20px;
+}
+@media screen and (min-width: 1921px) {
+  .store-availability-list__address, .store-availability-list__phone, .store-availability-list__invalid {
+    font-size: calc(15px / 14 * var(--base-body-size) + 0px);
+    line-height: 1.7;
+  }
+}
+@media screen and (min-width: 1280px) and (max-width: 1920px) {
+  .store-availability-list__address, .store-availability-list__phone, .store-availability-list__invalid {
+    font-size: calc(14px / 14 * var(--base-body-size) + 0px);
+    line-height: 1.7;
+  }
+}
+@media screen and (min-width: 1023px) and (max-width: 1280px) {
+  .store-availability-list__address, .store-availability-list__phone, .store-availability-list__invalid {
+    font-size: calc(13px / 14 * var(--base-body-size) + 0px);
+    line-height: 1.7;
+  }
+}
+@media screen and (max-width: 1023px) {
+  .store-availability-list__address, .store-availability-list__phone, .store-availability-list__invalid {
+    font-size: calc(12px / 14 * var(--base-body-size) + 0px);
+    line-height: 1.7;
+  }
+}
+.store-availability-list__address p {
+  margin-bottom: 0;
+}
+.store-availability-list__phone {
+  margin-bottom: 0;
+}
+.store-availability-list__invalid .icon {
+  width: 19px;
+  height: 19px;
+  position: relative;
+  top: 5px;
+}
+
+.store-availabilities-modal__variant-title,
+#StoreAvailabilitiesModalProductTitle {
+  margin-bottom: 0;
+}
+
+.store-availabilities-modal__variant-title {
+  margin-top: 4px;
+}
+
+.store-availabilities-modal__variant-title span:not(:last-child):after {
+  content: " / ";
+}
+
+.pickup-availability-button {
+  direction: inline-block;
+  border-bottom: 1px solid;
+  cursor: pointer;
+}

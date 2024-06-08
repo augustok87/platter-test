@@ -1,0 +1,47 @@
+<div class="page-content">
+
+	<div class="centered-section-content">
+
+		<div>
+
+			{%- render 'breadcrumb' -%}
+			<h1 class="title h0" style="margin-bottom:var(--compact-header-padding)">{{ 'customers.register_page.title' | t }}</h1>
+
+			{% form 'create_customer', class: 'simple-form' %}
+
+				{% render 'form-errors', form: form %}
+
+				<div class="simple-form-field">
+					<div class="simple-form-grid">
+						<div>
+							<label for="first_name" class="hidden">{{ 'customers.register_page.form.first_name_label' | t }}</label>
+							<input type="text" value="" name="customer[first_name]" id="first_name" placeholder="{{ 'customers.register_page.form.first_name_label' | t }}" {% if form.errors contains "first_name" %} class="error"{% endif %} autocapitalize="words" autofocus>
+						</div>
+						<div>
+							<label for="last_name" class="hidden">{{ 'customers.register_page.form.last_name_label' | t }}</label>
+							<input type="text" value="" name="customer[last_name]" id="last_name" placeholder="{{ 'customers.register_page.form.last_name_label' | t }}" {% if form.errors contains "last_name" %} class="error"{% endif %} autocapitalize="words">
+						</div>
+					</div>
+				</div>
+
+				<div class="simple-form-field">
+					<label for="email" class="hidden">{{ 'customers.register_page.form.email_label' | t }}</label>
+					<input type="email" value="" name="customer[email]" id="email" placeholder="{{ 'customers.register_page.form.email_label' | t }}" {% if form.errors contains "email" %} class="error"{% endif %} autocorrect="off" autocapitalize="off">
+				</div>
+
+				<div class="simple-form-field">
+					<label for="password" class="hidden">{{ 'customers.register_page.form.password_label' | t }}</label>
+					<input type="password" value="" name="customer[password]" id="create_password" placeholder="{{ 'customers.register_page.form.password_label' | t }}" {% if form.errors contains "password" %} class="error"{% endif %}>
+				</div>
+
+				<div class="login-actions">
+					<input class="button button--solid button--wide" type="submit" value="{{ 'customers.register_page.form.submit_button' | t }}">
+				</div>
+
+			</div>
+
+		{% endform %}
+
+	</div>
+
+</div>

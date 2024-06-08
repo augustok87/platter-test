@@ -1,0 +1,96 @@
+{%- if section.settings.bar_show -%} 
+
+	{%- if section.settings.bar_show_on_homepage == false or template == 'index' and section.settings.bar_show_on_homepage -%}
+
+    {{ 'section-announcement-bar.css' | asset_url | stylesheet_tag }}
+		
+		<announcement-bar>
+      {%- unless section.settings.bar_link == blank -%} <a class="announcement" href="{{ section.settings.bar_link | escape }}"> {%- else -%} <span class="announcement"> {%- endunless -%}
+        <span class="announcement__text body-text-sm">{{ section.settings.bar_message | escape }}</span>
+      {%- unless section.settings.bar_link == blank -%} </a> {%- else -%} </span> {%- endunless -%}
+    </announcement-bar>
+
+		{%- if section.settings.bar_show_dismiss -%}
+			<span class="announcement__exit" tabindex="0">
+        <span class="visually-hidden">{{ 'general.accessibility_labels.close' | t }}</span>
+        <span aria-hidden="true">{%- render 'theme-symbols', icon: 'close' -%}</span>
+      </span>
+		{%- endif -%}
+
+		{% style %}
+			.announcement {
+				background: {{ section.settings.bar_bgcolor }};
+				color: {{ section.settings.bar_txtcolor }};
+			}
+			.announcement__exit polygon {
+				fill: {{ section.settings.bar_txtcolor }};
+			}
+			{%- if section.settings.bar_show_dismiss -%}
+				.announcement {
+					padding-inline-end: 40px;
+				}
+			{%- endif -%}
+		{% endstyle %}
+
+    <script type="text/javascript">
+      var ad = localStorage.getItem('announcement-dismissed');
+      if ( ad != 'true' ) {
+        document.querySelector('body').classList.add('show-announcement-bar');
+      }
+    </script>
+
+	{%- endif -%}
+
+{%- endif -%}
+
+<script src="{{ 'component-announcement-bar.js' | asset_url }}" defer></script>
+
+{% schema %}
+  {
+    "name": "t:sections.announcement-bar.name",
+    "class": "mount-announcement",
+    "settings": [
+      {
+        "type": "checkbox",
+        "id": "bar_show",
+        "label": "t:sections.announcement-bar.settings.bar_show.label",
+        "default": false
+      },
+      {
+        "type": "checkbox",
+        "id": "bar_show_on_homepage",
+        "label": "t:sections.announcement-bar.settings.bar_show_on_homepage.label",
+        "default": false
+      },
+      {
+        "type": "checkbox",
+        "id": "bar_show_dismiss",
+        "label": "t:sections.announcement-bar.settings.bar_show_dismiss.label",
+        "default": true
+      },
+      {
+        "type": "text",
+        "id": "bar_message",
+        "label": "t:sections.announcement-bar.settings.bar_message.label",
+        "default": "Use this bar for a short, important announcement."
+      },
+      {  
+        "type": "url",
+        "id": "bar_link",
+        "label": "t:sections.announcement-bar.settings.bar_link.label"
+      },
+      {
+        "type": "color",
+        "id": "bar_bgcolor",
+        "label": "t:sections.announcement-bar.settings.bar_bgcolor.label",
+        "default": "#111111"
+      },
+      {
+        "type": "color",
+        "id": "bar_txtcolor",
+        "label": "t:sections.announcement-bar.settings.bar_txtcolor.label",
+        "default": "#ffffff"
+      }
+    ]
+  }
+{% endschema %}

@@ -1,0 +1,258 @@
+{% assign basket_builder_config = shop.metaobjects.basket_builder[settings.basket_builder_config_handle] %}
+
+{% if basket_builder_config %}
+  {% for reward in basket_builder_config.rewards.value %}
+    {% render 'foundry-liquid-to-js', data: reward, data_key: 'basket_builder_rewards' %}
+  {% endfor %}
+  {% capture reward_explanation_html %}
+    {{ basket_builder_config.reward_explanation | metafield_tag }}
+  {% endcapture %}
+  {% render 'foundry-liquid-to-js', data: reward_explanation_html, data_key: 'basket_builder_reward_explanation' %}
+
+  {% comment %}Needed for the Modal popup that describes the rewards.{% endcomment %}
+  <script src="{{ 'component-lightbox.js' | asset_url }}" defer></script>
+
+  <style>
+    /*
+    Re-position the close button on the cart drawer if the basket builder is present.
+    */
+    html[dir=ltr] .sidebar-close-element {
+      right: 0px;
+      top: 0px;
+    }
+
+    .sidebar-parent-element .sidebar-title-element,
+    .cart__title .sidebar-title-element {
+      position: inherit;
+    }
+
+    #basket-builder {
+      margin-top: 2.5em;
+      margin-bottom: 2.5em;
+    }
+
+    sidebar-drawer #basket-builder {
+      margin-bottom: 0;
+    }
+
+    #basket-builder .bb-progress-bar-container {
+      position: relative;
+      text-align: center;
+      cursor: pointer;
+    }
+
+    #basket-builder .bb-progress-rewards-container {
+      position: relative;
+      z-index: 10;
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      margin-left: 30px; /* Lead-in space */
+    }
+
+    .bb-progress-bar-container .bb-progress-bar {
+      position: absolute;
+      z-index: 0;
+      top: 25px;
+      width: 100%;
+      background-color: #EBEBEB;
+      border-radius: 3px;
+      margin-bottom: 4px;
+    }
+
+    .bb-progress-bar-container .progress-bar-fill {
+      display: block;
+      height: 8px;
+      background-color: #2561F6;
+      border-radius: 1px;
+      transition: width 500ms ease-in-out;
+    }
+
+    .bb-progress-bar-container .bb-progress-reward {
+      width: 60px;
+      height: 60px;
+      border-radius: 50%;
+      background-color: #fff;
+      border: 6px solid #EBEBEB;
+      background-size: contain;
+      background-position: center;
+    }
+
+    .bb-progress-bar-container .bb-progress-reward .level-threshold {
+      position: relative;
+      bottom: -58px;
+      font-size: 0.8em;
+      font-weight: bold;
+    }
+
+    .bb-progress-reward-text {
+      position: absolute;
+      font-size: 8px;
+      font-family: monospace;
+      line-height: 10px;
+      text-align: center;
+      width: 50px;
+      text-transform: uppercase;
+      padding-top: 14px;
+    }
+
+    .bb-progress-reward[data-achieved="true"] {
+      border-color: #2561F6;
+    }
+
+    .page-popup.milestones-popup {
+      padding: 1.5em;
+      width: 70%;
+    }
+
+    .page-popup.milestones-popup h2 {
+      text-align: center;
+    }
+
+    .milestones-popup li[data-level] {
+      display: flex;
+      gap: 1em;
+    }
+
+    {% for reward in basket_builder_config.rewards.value %}
+      {% assign reward_image = reward.variant.value.featured_image | default: reward.variant.value.product.featured_image %}
+      {% if reward_image %}
+        .bb-progress-reward[data-level="{{ forloop.index }}"] {
+          background-image: url('{{ reward_image | image_url: height: 60, width: 60, crop: 'center' }}');
+        }
+      {%  endif %}
+    {%  endfor %}
+
+    #basket-builder .basket-builder-message {
+      font-size: 0.8em;
+      text-align: center;
+      min-height: 2.5em;
+    }
+
+  </style>
+
+  <script type="module">
+   import { html, render } from 'preact_signals_standalone';
+   import { ProgressBar } from 'bb_progress_bar';
+   import { cartItemIds, nextReward, setSignalsFromCart, redeemableItems, rewards, revokableItems } from 'bb_cart_state';
+   import { getCart, addItemsToCart, updateCart } from 'cart_utilities'
+   import { htmlDecode, monetize} from 'foundry_utility_helpers';
+
+   const CART_FORM_UPDATED_EVENT = 'cart-updated'
+   const PRODUCT_FORM_ADDED_EVENT = 'add-to-cart'
+   const REWARD_EXPLANATION = window.FOUNDRY_DATA.basket_builder_reward_explanation
+
+
+   /*
+    The HTML for the popup explanation of the Milestones.
+   */
+   function MilestonesHTML() {
+     const milestones = rewards.map((reward, index) => {
+       const rewardLevel = index + 1
+       const threshold = monetize(reward.minimumOrderAmount)
+       return html`
+        <li data-level="${rewardLevel}">
+          <span class="bb-level-title">LEVEL ${rewardLevel}</span>
+          <span class="bb-level-amount" data-reward-theshold="${reward.minimumOrderAmount}">($${threshold}+):</span>
+          <span>${reward.name}</span>
+        </li>
+       `
+     })
+
+     const milestoneExplanation = REWARD_EXPLANATION ? html`<p class="bb-reward-explanation">${htmlDecode(REWARD_EXPLANATION)}</p>` : ''
+
+     return html`
+       <div id="bb-milestones">
+         <div class="page-popup milestones-popup">
+           <h2>MILESTONES</h2>
+           ${milestoneExplanation}
+           <ul>
+              ${milestones}
+           </ul>
+           <div class="basicLightboxClose" tabindex="0">×</div>
+         </div>
+       </div>
+    `
+   }
+
+   // The main component of the cart that will be rendered in the cart drawer.
+   function BasketBuilder() {
+     if (!cartItemIds.value) {
+       return html`<div>Loading...</div>`;
+     }
+
+     return html`
+       <div class="basket-builder-message">
+          ${nextReward.value?.progressMessage.value}
+       </div>
+       <div class="bb-progress-bar-main">
+        ${ProgressBar()}
+       </div>
+       ${MilestonesHTML()}
+     `
+   }
+
+   /*
+  Fetch the cart from the AJAX api.
+  Set the preact signals from the cart data.
+   */
+   const updateBasketBuilder = async () => {
+     const cart = await getCart()
+     setSignalsFromCart(cart)
+   }
+
+   /*
+   Redeem and revoke rewards for the cart.
+   */
+   const adjustRewards = async () => {
+     if(Object.keys(revokableItems.value)?.length) {
+       await updateCart(revokableItems.value)
+     }
+     if(redeemableItems.value.length) {
+       await addItemsToCart(redeemableItems.value)
+     }
+     await updateBasketBuilder()
+     window.refreshCart({inBackground: true})
+   }
+
+   /*
+   Update the basket builder with the cart data, and then adjust the rewards.
+   */
+   const reconcileCartAndBasketBuilder = async (_e) => {
+     await updateBasketBuilder()
+     await adjustRewards()
+   }
+
+   /*
+   Listen for cart events.
+   Update the signals with the cart data from the cart-form.
+   For `cart-form` web components, `cart-updated` event.
+   For the document, the `add-to-cart` event.
+   */
+   const listenForCartUpdates = () => {
+     const cartForm = document.querySelector('#AjaxCartForm')
+     // const productForms = document.querySelectorAll('product-form')
+     cartForm.addEventListener(CART_FORM_UPDATED_EVENT, reconcileCartAndBasketBuilder)
+     document.addEventListener(PRODUCT_FORM_ADDED_EVENT, reconcileCartAndBasketBuilder)
+   }
+
+
+   /*
+   Set up the event listeners for cart changes.
+   Update the basket builder on load.
+   */
+   document.addEventListener('DOMContentLoaded', async () => {
+     listenForCartUpdates()
+     await reconcileCartAndBasketBuilder()
+     // Render the BasketBuilder within a specified container
+     const basketBuilderElem = document.querySelector('#basket-builder')
+     render(html`<${BasketBuilder} />`, basketBuilderElem);
+     window.basicLightbox.create(document.querySelector('#basket-builder #bb-milestones'), {
+       trigger: document.querySelector('#basket-builder .bb-progress-bar-main')
+     })
+   });
+  </script>
+
+  <div id="basket-builder"></div>
+
+{% endif %}

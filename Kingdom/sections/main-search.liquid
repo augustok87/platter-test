@@ -1,0 +1,211 @@
+{{ 'section-main-search.css' | asset_url | stylesheet_tag }}
+
+<div class="compact-header">
+	<div class="compact-header-container">
+    {%- render 'breadcrumb', terms: search.terms -%}
+    <h1 class="search-header__title h0">{{ 'search.page.title' | t }}</h1>
+  </div>
+</div>
+
+<div class="gutter--on">
+	<div class="search-page-form">
+		{%- liquid
+	    if search.performed and search.results_count > 0
+	      assign search_label = 'search.page.search_again_button_label' | t 
+	    else 
+	      assign search_label = 'search.page.search_button_label' | t 
+	    endif
+	    assign search_placeholder = 'search.page.form_placeholder' | t
+	    render 'search-form', search_label: search_label, search_placeholder: search_placeholder 
+    -%}
+	</div>
+	{%- if search.performed and search.results_count == 0 and search.filters == empty -%}
+		<p class="subtitle">{{ 'search.page.no_results' | t: terms: search.terms }}</p>
+	{%- endif -%}
+</div>
+
+{%- if search.performed -%}
+
+	{% comment %}
+		Show collection page without form
+	{% endcomment %}
+
+	{%- paginate search.results by section.settings.products_number -%}
+
+		{%- liquid
+			assign products_in_current = false
+			assign offset = paginate.current_offset | plus: 1
+			assign page_size = paginate.current_offset | plus: paginate.page_size | at_most: paginate.items
+			assign products_results = search.results | where: 'object_type', 'product'
+		-%}
+
+		{%- if products_results.size > 0 or search.results.size == 0 and search.filters != empty -%}
+
+			<div class="compact-header">
+
+				<div style="width:100%">
+
+			    <h1 class="search-header__title h1">{{ 'search.page.products_found' | t: terms: search.terms }}</h1>
+
+			    {%- if section.settings.enable_filtering or section.settings.enable_sorting -%}
+						{{ 'component-facets.css' | asset_url | stylesheet_tag }}
+			    	{%- render 'facets', results: search, type: 'desktop', enable_filtering: section.settings.enable_filtering, enable_sorting: section.settings.enable_sorting, offset: offset, page_size: page_size -%}
+			    {%- else -%}
+			    	<div class="search-header__description rte">{{ 'search.page.results_count' | t: offset: offset, page_size: page_size, count: paginate.items }}</div>
+			    {%- endif -%}
+
+			    {%- assign products_in_current = true -%}
+			    
+			  </div>
+
+			</div>
+
+		{%- endif -%}
+
+    <div id="CollectionProductGrid">
+
+			<div class="gutter--on" {% if products_results.size == 0 and search.filters == empty %} style="display:none" {% endif %}>
+			
+				<div id="main-collection-product-grid" data-id="{{ section.id }}" class="collection collection--{{ settings.grid_style }} collection--grid">
+
+					{%- liquid
+						if products_results.size > 0
+							for product in products_results
+								render 'product-item', product: product
+							endfor
+						endif
+					-%}
+
+					{%- if search.results.size == 0 and search.filters != empty -%}
+						{%- liquid
+							assign sort_by = search.sort_by | default: search.default_sort_by
+							assign terms = search.terms | escape
+							assign search_url = '?q=' | append: terms | append: '&options%5Bprefix%5D=last&sort_by=' | append: sort_by
+						-%}
+						<p style="margin-inline-start:calc(var(--grid-gutter)/2); margin-top: 1.5em" class="no-content-message">
+							{{ 'collections.empty' | t }}<br/>
+							{{ 'collections.use_fewer_filters_html' | t: link: search_url, class: 'button--text' }}
+						</p>
+					{%- endif -%}
+
+				</div>
+				
+			</div>
+
+	    {%- if search.types contains 'page' or search.types contains 'article' -%}
+
+	    	{%- capture search_results -%}
+
+	    		{%- for result in search.results -%}
+
+	    			{%- liquid
+	    				if result.object_type == 'product'
+	    					continue
+	    				endif
+	    			-%}
+
+						<div class="blog-item">
+
+							<div class="blog-item__content">
+								
+								<div class="blog-item__title-holder">
+									<a href="{{ result.url | escape }}" title="{{ result.title | escape }}">
+										<h3 class="blog-item__title h0"><span>{{ result.title | escape }}</span></h3>
+									</a>
+								</div>
+
+								<div class="blog-item__excerpt">
+									<p>{{ result.content | strip_html | truncatewords: 35 }}</p>
+								</div>
+
+								<div><a class="blog-item__more" href="{{ result.url | escape }}">{{ 'blog.grid.read_more_label' | t }}</a></div>
+
+							</div>
+
+						</div>
+
+					{%- endfor -%}
+
+				{%- endcapture -%}
+
+				{%- if search_results != blank -%}
+
+					<div class="compact-header">
+						<div class="compact-header-container">
+					    <h2 class="search-header__title h1">{{ 'search.page.pages_and_articles_found' | t: terms: search.terms }}</h2>
+					    {%- unless products_in_current -%}
+				    		<div class="search-header__description rte">{{ 'search.page.results_count' | t: offset: offset, page_size: page_size, count: paginate.items }}</div>
+				    	{%- endunless -%}
+					  </div>
+					</div>
+
+					<div class="blog--grid blog--images-false gutter--on">
+						{{ search_results }}
+					</div>
+
+				{%- endif -%}
+
+	    {%- endif -%}
+
+		  {%- liquid
+		    if paginate.pages > 1
+		      render 'pagination', paginate: paginate
+		    endif
+		  -%}
+
+		</div>
+
+	{%- endpaginate -%}
+
+{%- endif -%}
+
+{%- if section.settings.enable_filtering or section.settings.enable_sorting -%}
+  <sidebar-drawer data-overlay="sidebar" class="collection__filters sidebar-parent-element" style="display:none">
+    <div class="sidebar-element sidebar-element--right-side">
+      <span class="collection__filters-close sidebar-close-element" data-js-close tabindex="0">
+        <span class="visually-hidden">{{ 'general.accessibility_labels.close' | t }}</span>
+        <span aria-hidden="true">{%- render 'theme-symbols', icon: 'close' -%}</span>
+      </span>
+      <div class="collection__filters-holder sidebar-content-element">
+        <div class="collection__filters-title body-text-sm sidebar-title-element"><span>{{ 'collections.filter_and_sort' | t }}</span></div>
+				{%- render 'facets', results: search, type: 'mobile', enable_filtering: section.settings.enable_filtering, enable_sorting: section.settings.enable_sorting, offset: offset, page_size: page_size -%}
+      </div>
+    </div>
+  </sidebar-drawer>
+  <script src="{{ 'component-facets.js' | asset_url }}" defer></script>
+{%- endif -%}
+
+{% schema %}
+  {
+    "name": "t:sections.main-search.name",
+    "class": "main-search",
+    "settings": [
+      {
+        "type": "range",
+        "id": "products_number",
+        "label": "t:sections.main-search.settings.products_per_page.label",
+        "min": 12,
+        "max": 48,
+        "step": 4,
+        "default": 24
+      },
+      {
+        "type": "header",
+        "content": "t:sections.main-collection-product-grid.settings.header__1.content"
+      },
+      {
+        "id": "enable_filtering",
+        "type": "checkbox",
+        "label": "t:sections.main-collection-product-grid.settings.enable_filtering.label",
+        "default": false,
+        "info": "t:sections.main-collection-product-grid.settings.enable_filtering.info"
+      },
+      {
+        "id": "enable_sorting",
+        "type": "checkbox",
+        "label": "t:sections.main-collection-product-grid.settings.enable_sorting.label",
+        "default": false
+      }
+    ]
+  }
+{% endschema %}

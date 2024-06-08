@@ -1,0 +1,174 @@
+{{ 'section-shop-the-look.css' | asset_url | stylesheet_tag }}
+
+<div id="shop-the-look-{{ section.id }}" class="content-section full-width-section-content gutter--on shop-the-look">
+    
+  <div class="shop-the-look__header">
+
+    {%- unless section.settings.title == blank -%}
+      <{{ section.settings.seo_h_tag }} class="shop-the-look__title h1">{{ section.settings.title | escape }}</{{ section.settings.seo_h_tag }}>
+    {%- endunless -%}
+
+    {%- unless section.settings.title == blank -%}
+      <p class="shop-the-look__subheading">{{ section.settings.subheading | escape }}</p>
+    {%- endunless -%}
+
+    <div class="shop-the-look__background">
+      {%- if section.settings.image -%}
+        {%- liquid
+          if section.index == 1
+            assign preload = true
+          else
+            assign preload = false
+          endif
+          assign sizes = 'sizes="(max-width: 768px) 50vh, (min-width: 768px) and (max-width: 948px) 50vw, calc((100vw - 200px) / 2)"'
+          render 'lazy-image', image: section.settings.image, type: 'background', alt: section.settings.title, sizes: sizes, image_alignment: true, preload: preload
+        -%}
+      {%- else -%}
+        <span class="onboarding-svg onboarding-background">{{ 'collection-1' | placeholder_svg_tag }}</span>
+      {%- endif -%}
+    </div>
+
+  </div>
+
+  <div class="shop-the-look__content">
+      
+    {%- if section.blocks.size > 0 -%}
+      <css-slider class="collection--slider collection--{{ settings.grid_style }} css-slider--simple-dots"
+        data-options='{
+          "selector": ".product-item",
+          "navigation": false,
+          "groupCells": true
+        }'
+        style="display:flex"
+      > 
+      {%- liquid 
+        for block in section.blocks
+          unless block.settings.product == blank
+            render 'product-item', product: block.settings.product, index: forloop.index
+          else 
+            render 'product-item', blank_product: true, index: forloop.index
+          endunless
+        endfor
+      -%}
+    {%- endif -%}
+
+  </div>
+
+  {%- if section.settings.color_text != 'rgba(0,0,0,0)' -%}
+    {% style %}
+      #shop-the-look-{{ section.id }} .shop-the-look__header {
+        color: {{ section.settings.color_text }};
+      }
+    {% endstyle %}
+  {%- endif -%}
+
+  {%- if section.settings.color_bg != 'rgba(0,0,0,0)' -%}
+    {% style %}
+      #shop-the-look-{{ section.id }} .shop-the-look__background:after {
+        background-color: {{ section.settings.color_bg }};
+      }
+    {% endstyle %}
+  {%- endif -%}
+
+</div>
+
+{% schema %}
+  {
+    "name": "t:sections.shop-the-look.name",
+    "class": "mount-css-slider with-gutter overflow-hidden",
+    "max_blocks": 4,
+    "settings": [
+      {
+        "type": "text",
+        "id": "title",
+        "label": "t:sections.shop-the-look.settings.heading.label",
+        "default": "Shop the look"
+      },
+      {
+        "type": "text",
+        "id": "subheading",
+        "label": "t:sections.shop-the-look.settings.subheading.label"
+      },
+      {
+        "type": "image_picker",
+        "id": "image",
+        "label": "t:sections.shop-the-look.settings.image.label"
+      },
+      {
+        "type": "header",
+        "content": "t:settings_schema.colors.name"
+      },
+      {
+        "type": "color",
+        "id": "color_text",
+        "label": "t:sections.custom-colors.text.label",
+        "default": "rgba(0,0,0,0)"
+      },
+      {
+        "type": "color",
+        "id": "color_bg",
+        "label": "t:sections.custom-colors.overlay.label",
+        "default": "rgba(0,0,0,0)"
+      },
+      {
+        "type": "select",
+        "id": "seo_h_tag",
+        "label": "t:sections.refactor_words.seo.label",
+        "info": "t:sections.refactor_words.seo.info",
+        "options": [
+          {
+            "value": "h1",
+            "label": "H1"
+          },
+          {
+            "value": "h2",
+            "label": "H2"
+          },
+          {
+            "value": "h3",
+            "label": "H3"
+          },
+          {
+            "value": "h4",
+            "label": "H4"
+          },
+          {
+            "value": "span",
+            "label": "span"
+          }
+        ],
+        "default": "h3"
+      }
+    ],
+    "blocks": [
+       {
+        "type": "product",
+        "name": "t:sections.shop-the-look.blocks.product.name",
+        "settings": [
+          {
+            "type": "product",
+            "id": "product",
+            "label": "t:sections.shop-the-look.blocks.product.settings.select_product.label"
+          }
+        ]
+      }
+    ],
+    "presets": [{
+      "name": "t:sections.shop-the-look.presets.name",
+      "blocks": [
+        {
+          "type": "product"
+        },
+        {
+          "type": "product"
+        },
+        {
+          "type": "product"
+        }
+      ]
+    }],
+    "disabled_on": {
+      "templates": ["password"]
+    }
+  }
+{% endschema %}

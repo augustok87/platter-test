@@ -1,0 +1,75 @@
+<style>
+  .comparison-chart__image {
+    margin: auto 25px -15px;
+  }
+  .comparison-chart__wrapper {
+    border-top: 1px solid #ebebeb;
+    border-bottom: 1px solid #ebebeb;
+    padding: 50px 60px 60px;
+  }
+  .comparison-chart__wrapper .comparison-chart__container {
+    max-width: 1300px;
+  }
+  .overflow-scroll {
+    display: block;
+    overflow-x: scroll;
+  }
+  .comparison-chart__wrapper .chart-image {
+    width: 100%;
+    max-width: 1300px;
+    min-width: 1040px;
+  }
+  .chart-title {
+    text-align: center;
+    font-family: inherit;
+    font-size: 38px;
+    margin-top: 20px;
+    margin-bottom: 10px;
+    text-transform: uppercase;
+  }
+  @media screen and (max-width: 600px) {
+    .overflow-scroll {
+      width: 100vw;
+      margin-left: -80px;
+    }
+  }
+</style>
+
+<div class="comparison-chart__wrapper">
+  <div class="comparison-chart__container">
+    <h3 class="chart-title">{{ section.settings.title }}</h3>
+    <div class="overflow-scroll">
+      <img
+        class="chart-image"
+        src="{{ section.settings.chart_image.src |  image_url }}"
+        alt="{{ section.settings.logo.src.alt }}" />
+    </div>
+  </div>
+</div>
+
+{% schema %}
+  {
+    "name": "Comparison Chart Image",
+    "class": "comparison-chart__image",
+    "settings": [
+      {
+        "type": "text",
+        "id": "title",
+        "label": "Title",
+        "default": "Chart Image Title"
+      }, {
+        "type": "image_picker",
+        "id": "chart_image",
+        "label": "Select comparison chart image"
+      }
+    ],
+    "presets": [
+      {
+        "name": "Comparison Chart Image"
+      }
+    ],
+    "enabled_on": {
+      "templates": ["*"]
+    }
+  }
+{% endschema %}

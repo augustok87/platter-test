@@ -1,0 +1,19 @@
+<div class="page-content">
+  <div class="centered-section-content" style="margin-bottom:var(--vertical-padding)">
+    <div>
+      <div class="page-header">
+        {%- render 'breadcrumb' -%}
+        <h1 class="title h0" style="margin-bottom:var(--compact-header-padding)">{{ 'cart.title' | t }}</h1>
+      </div>
+      {%- render 'foundry-basket-builder' -%}
+      {%- render 'cart-form', location: 'page' -%}
+    </div>
+  </div>
+</div>
+
+{% schema %}
+{
+  "name": "t:sections.main-cart-items.name",
+  "class": "cart-page-items"
+}
+{% endschema %}

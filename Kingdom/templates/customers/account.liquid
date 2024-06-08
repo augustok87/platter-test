@@ -1,0 +1,82 @@
+<div class="page-content">
+
+	<div class="centered-section-content">
+
+		<div>
+
+			<header class="page-title">
+				<div>
+					{%- render 'breadcrumb' -%}
+					<h1 class="title h0">{{ 'customers.account_page.title' | t }}</h1>
+			  	<span class="subtitle">{{ 'customers.account_page.subtitle' | t }}</span>
+		 		</div>
+		  	{% if shop.customer_accounts_enabled and customer %}
+					<a class="button button--outline" href="{{ routes.account_logout_url }}">{{ 'customers.login_page.form_logout_button' | t }}</a>
+				{% endif %}
+			</header>
+
+			{% paginate customer.orders by 20 %}
+
+				{% if customer.orders.size != 0 %}
+
+					<table class="order-table o-history">
+
+						<tbody>
+							{% for order in customer.orders %}
+								<tr>
+									<td>
+										<span class="label">{{ 'customers.account_page.orders_table.order' | t }}</span>
+										{{ order.name | link_to: order.customer_url }}
+									</td>
+									<td>
+										<span class="label">{{ 'customers.account_page.orders_table.date' | t }}</span>
+										{{ order.created_at | date: "%b %d, %Y" }}
+									</td>
+									<td>
+										<span class="label">{{ 'customers.account_page.orders_table.payment_status' | t }}</span>
+										{{ order.financial_status_label }}
+									</td>
+									<td>
+										<span class="label">{{ 'customers.account_page.orders_table.fulfillment_status' | t }}</span>
+										{{ order.fulfillment_status_label }}
+									</td>
+									<td>
+										<span class="label">{{ 'customers.account_page.orders_table.total' | t }}</span>
+										{{ order.total_price | money }}
+									</td>
+								</tr>
+							{% endfor %}
+						</tbody>
+						
+					</table>
+
+				{% else %}
+
+					<p>{{ 'customers.account_page.no_orders_message' | t }}</p>
+
+				{% endif %}		
+			
+				{% if paginate.pages > 1 %}
+					{% render 'pagination', paginate: paginate %}
+				{% endif %}
+
+			{% endpaginate %}
+
+			<header class="page-title" style="margin-top:95px">
+				<div>
+					<h2 class="title h0">{{ 'customers.account_page.account_details_title' | t }}</h2>
+			  	<span class="subtitle">{{ 'customers.account_page.account_details_subtitle' | t }}</span>
+			  </div>
+			</header>
+
+			<strong>{{ customer.name }}</strong>
+
+			{{ customer.default_address | format_address }}
+
+			<p><a href="{{ routes.account_addresses_url }}">{{ 'customers.account_page.view_addresses_link' | t }} ({{ customer.addresses_count }})</a></p>
+
+		</div>
+
+	</div>
+
+</div>

@@ -1,0 +1,35 @@
+<div class="page-content">
+  <div class="centered-section-content">
+    <div>
+      {%- liquid
+        for block in section.blocks
+          case block.type 
+            when 'subtotal'
+              render 'cart-subtotal'
+            when 'app'
+              render block
+          endcase
+        endfor 
+      -%}
+    </div>
+  </div>
+</div>
+
+{% schema %}
+{
+  "name": "t:sections.main-cart-footer.name",
+  "class": "cart-page-footer",
+  "blocks": [
+    {
+      "type": "subtotal",
+      "limit": 1,
+      "name": "t:sections.main-cart-footer.blocks.subtotal_button.name"
+    },
+    {
+      "type": "@app"
+    }
+  ]
+}
+{% endschema %}
+
+

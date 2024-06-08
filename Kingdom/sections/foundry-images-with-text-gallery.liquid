@@ -1,0 +1,508 @@
+{{ 'section-image-with-text.css' | asset_url | stylesheet_tag }}
+<style>
+
+  #shopify-section-{{ section.id }} .content-section.image-text {
+    height: {{ section.settings.image_height }};
+    display: flex;
+    flex-direction: row;
+    justify-content: space-around;
+    padding: 0 {{ section.settings.images_gap }}px;
+  }
+
+  #shopify-section-{{ section.id }} .content-section.full-width-section-content.image-text {
+    gap: {{ section.settings.images_gap }}px;
+  }
+
+  #shopify-section-{{ section.id }} .image-text__container {
+    padding: 20px;
+    display: flex;
+    justify-content: center;
+    align-items: flex-start;
+    height: auto;
+    width: {{ section.settings.image_width }}
+  }
+
+  #shopify-section-{{ section.id }} {
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+  }
+  #shopify-section-{{ section.id }} .image-text__container-title {
+    text-align: {{ section.settings.image_with_text_title_alignment }};
+  }
+
+  #shopify-section-{{ section.id }} .image-text__container-title > h1, h2, h3 {
+    text-align: {{ section.settings.image_text_alignment }};
+    font-size: {{ section.settings.image_with_text_title_font_size }}px;
+  }
+
+  #shopify-section-{{ section.id }} .image-text__content {
+    width: 100%;
+  }
+  
+  #shopify-section-{{ section.id }} .image-text__content > div {
+    max-width: {{ section.settings.text_width }};
+  }
+  
+  #shopify-section-{{ section.id }} .lazy-image--background img {
+    object-fit: {{ section.settings.image_object-fit }};
+  }
+  
+  
+  #shopify-section-{{ section.id }} .image-text__title {
+    text-align: {{ section.settings.image_text_alignment }};
+    font-size: {{ section.settings.text_size }};
+  }
+
+
+  
+  /* Mobile */
+  @media only screen and (max-width: 768px) {
+    #shopify-section-{{ section.id }} .content-section.full-width-section-content.image-text {
+      display: flex;
+      overflow-x: auto;
+      flex-wrap: nowrap;
+      flex-direction: row;
+      gap: 1rem;
+      padding: 0 1rem;
+    }
+
+    #shopify-section-{{ section.id }} .image-text__container {
+      flex: 0 0 auto;
+      width: calc(100vw - 90px);
+      margin-right: 30px;
+      width: 70% !important;
+      height: auto;
+      padding: 0;
+      display: flex;
+      justify-content: center;
+      height: {{ section.settings.mobile_image_height }};
+
+    }
+
+    #shopify-section-{{ section.id }} .image-text__container:last-child {
+      margin-right: 0;
+    }
+    #shopify-section-{{ section.id }} .image-text__content > div {
+      padding: 5%;
+    }
+
+  }
+
+</style>
+
+<div class="foundry-image-and-text">
+
+  <div class="image-text__container-title">
+    <{{ section.settings.image_with_text_title_tag }}>{{ section.settings.title | escape }}</{{ section.settings.image_with_text_title_tag }}>
+  </div>
+
+  <div class="content-section full-width-section-content gutter--{% if section.settings.gutter_enabled %}on{% else %}off{% endif %} image-text">
+
+    {%- for block in section.blocks -%}
+
+      {%- if block.type == 'image' -%}
+
+        <div class="image-text__container block-{{ block.id }}" {{ block.shopify_attributes }} style="color: {{ block.settings.color_text }};">
+          <div class="image-text__content aligned-text-content {{ block.settings.image_text_alignment }}">
+            <div class="image-text__wrapper">
+              <h3 class="image-text__title"><span>{{ block.settings.title | escape }}</span></h3>
+              {%- unless block.settings.body == blank -%}
+                <div class="image-text__body rte">{{ block.settings.body }}</div>
+              {%- endunless -%}
+              {%- unless block.settings.button_label == blank -%} 
+                <a class="button button--solid" {% unless block.settings.url == blank %} href="{{ block.settings.url | escape }} {% endunless %}" title="{{ block.settings.button_label | escape }}">{{ block.settings.button_label | escape }}</a>
+              {%- endunless -%}
+            </div>
+          </div>
+          {%- unless block.settings.image == blank -%}
+            {% render 'lazy-image', image: block.settings.image, type: 'background', alt: block.settings.title %}
+          {%- else -%}
+            <span class="onboarding-svg onboarding-background">{{ 'image' | placeholder_svg_tag }}</span>
+          {%- endunless -%}
+        </div>
+
+      {%- elsif block.type == 'background_with_text' -%}
+        <div class="image-text__container block-{{ block.id }}" {{ block.shopify_attributes }} style="color: {{ block.settings.background_color_text }}; background-color: {{ block.settings.background_color }};">
+          <div class="image-text__content aligned-text-content {{ block.settings.background_text_alignment }}">
+            <div>
+              {%- unless block.settings.title == blank -%}
+                <h3 class="image-text__title"><span>{{ block.settings.title | escape }}</span></h3>
+              {%- endunless -%}
+              {%- unless block.settings.body == blank -%}
+                <div class="image-text__body">{{ block.settings.body }}</div>
+              {%- endunless -%}
+            </div>
+          </div>
+        </div>
+      {%- endif -%}
+
+    {%- endfor -%}
+    
+  </div>
+</div>
+
+
+{% schema %}
+  {
+    "name": "Foundry Images Gallery",
+    "max_blocks": 5,
+    "blocks": [
+      {
+        "type": "image",
+        "name": "t:sections.image-with-text.blocks.image.name",
+        "settings": [
+          {
+            "type": "text",
+            "id": "title",
+            "label": "t:sections.image-with-text.blocks.image.settings.title.label",
+            "default": "Image with text"
+          },
+          {
+            "type": "richtext",
+            "id": "body",
+            "label": "t:sections.image-with-text.blocks.image.settings.body.label",
+            "default": "<p>Share your latest products, collections or promotions!</p>"
+          },
+          {
+            "type": "text",
+            "id": "button_label",
+            "label": "t:sections.image-with-text.blocks.image.settings.button_label.label"
+          },
+          {
+            "type": "url",
+            "id": "url",
+            "label": "t:sections.image-with-text.blocks.image.settings.url.label",
+            "info": "t:sections.image-with-text.blocks.image.settings.url.info"
+          },
+          {
+            "type": "image_picker",
+            "id": "image",
+            "label": "t:sections.image-with-text.blocks.image.settings.image.label"
+          },
+          {
+            "type": "select",
+            "id": "image_text_alignment",
+            "label": "Text Alignment",
+            "options": [
+              {
+                "value": "horizontal-left vertical-top",
+                "label": "Top Left"
+              },
+              {
+                "value": "horizontal-center vertical-top",
+                "label": "Top Center"
+              },
+              {
+                "value": "horizontal-right vertical-top",
+                "label": "Top Right"
+              },
+              {
+                "value": "horizontal-left vertical-middle",
+                "label": "Middle Left"
+              },
+              {
+                "value": "horizontal-center vertical-middle",
+                "label": "Center"
+              },
+              {
+                "value": "horizontal-right vertical-middle",
+                "label": "Middle Right"
+              },
+              {
+                "value": "horizontal-left vertical-bottom",
+                "label": "Bottom Left"
+              },
+              {
+                "value": "horizontal-center vertical-bottom",
+                "label": "Bottom Center"
+              },
+              {
+                "value": "horizontal-right vertical-bottom",
+                "label": "Bottom Right"
+              }
+            ],
+            "default": "horizontal-left vertical-bottom"
+          },
+          {
+            "type": "color",
+            "id": "color_text",
+            "label": "Text Color",
+            "default": "#000000"
+          }
+        ]
+      },
+      {
+        "type": "background_with_text",
+        "name": "Background with Text",
+        "settings": [
+          {
+            "type": "text",
+            "id": "title",
+            "label": "Title",
+            "default": "Background with text"
+          },
+          {
+            "type": "richtext",
+            "id": "body",
+            "label": "Text",
+            "default": "<p>Your text here</p>"
+          },
+          {
+            "type": "color",
+            "id": "background_color",
+            "label": "Background Color",
+            "default": "#000000"
+          },
+          {
+            "type": "color",
+            "id": "background_color_text",
+            "label": "Text Color",
+            "default": "#000000"
+          },
+          {
+            "type": "select",
+            "id": "background_text_alignment",
+            "label": "Text Alignment",
+            "options": [
+              {
+                "value": "horizontal-left vertical-top",
+                "label": "Top Left"
+              },
+              {
+                "value": "horizontal-center vertical-top",
+                "label": "Top Center"
+              },
+              {
+                "value": "horizontal-right vertical-top",
+                "label": "Top Right"
+              },
+              {
+                "value": "horizontal-left vertical-middle",
+                "label": "Middle Left"
+              },
+              {
+                "value": "horizontal-center vertical-middle",
+                "label": "Center"
+              },
+              {
+                "value": "horizontal-right vertical-middle",
+                "label": "Middle Right"
+              },
+              {
+                "value": "horizontal-left vertical-bottom",
+                "label": "Bottom Left"
+              },
+              {
+                "value": "horizontal-center vertical-bottom",
+                "label": "Bottom Center"
+              },
+              {
+                "value": "horizontal-right vertical-bottom",
+                "label": "Bottom Right"
+              }
+            ],
+            "default": "horizontal-left vertical-bottom"
+          }
+        ]
+      }
+    ],
+    "settings": [
+      {
+        "type": "text",
+        "id": "title",
+        "label": "Title",
+        "default": "Optional Title"
+      },
+      {
+        "type": "select",
+        "id": "image_with_text_title_tag",
+        "label": "Section Title",
+        "options": [
+          {
+            "value": "h1",
+            "label": "H1"
+          },
+          {
+            "value": "h2",
+            "label": "H2"
+          },
+          {
+            "value": "h3",
+            "label": "H3"
+          }
+        ],
+        "default": "h1"
+      },
+      {
+        "type": "select",
+        "id": "image_with_text_title_alignment",
+        "label": "Title Alignment",
+        "options": [
+          {
+            "value": "left",
+            "label": "Left"
+          },
+          {
+            "value": "center",
+            "label": "Center"
+          },
+          {
+            "value": "right",
+            "label": "Right"
+          }
+        ],
+        "default": "center"
+      },
+      {
+        "type": "range",
+        "id": "image_with_text_title_font_size",
+        "label": "Title Font Size",
+        "min": 12,
+        "max": 50,
+        "default": 25
+      },
+      {
+        "type": "select",
+        "id": "image_height",
+        "label": "Images Container Height",
+        "options": [
+          {
+            "value": "25vh",
+            "label": "t:sections.image-with-text.settings.image_height.options__1.label"
+          },
+          {
+            "value": "40vh",
+            "label": "t:sections.image-with-text.settings.image_height.options__2.label"
+          },
+          {
+            "value": "60vh",
+            "label": "t:sections.image-with-text.settings.image_height.options__3.label"
+          },
+          {
+            "value": "100vh",
+            "label": "t:sections.image-with-text.settings.image_height.options__4.label"
+          }
+        ],
+        "default": "60vh"
+      },
+      {
+        "type": "select",
+        "id": "image_width",
+        "label": "Images Width",
+        "options": [
+          {
+            "value": "15vw",
+            "label": "t:sections.image-with-text.settings.image_height.options__1.label"
+          },
+          {
+            "value": "35vw",
+            "label": "t:sections.image-with-text.settings.image_height.options__2.label"
+          },
+          {
+            "value": "50vw",
+            "label": "t:sections.image-with-text.settings.image_height.options__3.label"
+          }
+        ],
+        "default": "35vw"
+      },
+      {
+        "type": "range",
+        "id": "images_gap",
+        "label": "Gap between images",
+        "min": 0,
+        "max": 100,
+        "default": 30
+      },
+      {
+        "type": "select",
+        "id": "image_object-fit",
+        "label": "Image Object Fit",
+        "options": [
+          {
+            "value": "cover",
+            "label": "Cover"
+          },
+          {
+            "value": "contain",
+            "label": "Contain"
+          },
+          {
+            "value": "fill",
+            "label": "Fill"
+          }
+        ]
+      },
+      {
+        "type": "select",
+        "id": "mobile_image_height",
+        "label": "Mobile Images Height",
+        "options": [
+          {
+            "value": "25vh",
+            "label": "Small"
+          },
+          {
+            "value": "40vh",
+            "label": "Medium"
+          },
+          {
+            "value": "60vh",
+            "label": "Large"
+          },
+          {
+            "value": "80vh",
+            "label": "Extra Large"
+          }
+        ],
+        "default": "60vh"
+      },
+      {
+        "type": "select",
+        "id": "text_width",
+        "label": "t:sections.image-with-text.settings.text_width.label",
+        "options": [
+          {
+            "value": "60%",
+            "label": "t:sections.image-with-text.settings.text_width.options__1.label"
+          },
+          {
+            "value": "85%",
+            "label": "t:sections.image-with-text.settings.text_width.options__2.label"
+          },
+          {
+            "value": "100%",
+            "label": "t:sections.image-with-text.settings.text_width.options__3.label"
+          }
+        ],
+        "default": "100%"
+      },
+      {
+        "type": "select",
+        "id": "text_size",
+        "label": "Image Heading Size",
+        "options": [
+          {
+            "value": "20px",
+            "label": "t:sections.image-with-text.settings.text_size.options__1.label"
+          },
+          {
+            "value": "25px",
+            "label": "t:sections.image-with-text.settings.text_size.options__2.label"
+          },
+          {
+            "value": "35px",
+            "label": "t:sections.image-with-text.settings.text_size.options__3.label"
+          }
+        ],
+        "default": "25px"
+      }
+    ], 
+    "presets": [{
+      "name": "Foundry Images Gallery",
+      "blocks": [{
+        "type": "image"
+      }]
+    }]
+  }
+{% endschema %}

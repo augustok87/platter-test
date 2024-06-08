@@ -1,0 +1,197 @@
+{{ 'section-sidebar.css' | asset_url | stylesheet_tag }}
+
+<main-sidebar class="sidebar">
+
+	<div class="sidebar__container sidebar__responsive-container sidebar-element sidebar-menus-holder">
+
+		<div class="sidebar__container-holder" style="flex: 1 0 auto;">
+
+	    <header class="logo">
+				<div>
+					{%- if section.settings.logo_src -%}
+						<a class="logo__image" href="{{ routes.root_url }}" style="display:block;height:{{ section.settings.logo_width | divided_by: section.settings.logo_src.aspect_ratio }}px">
+							<img src="{{ section.settings.logo_src | image_url }}" alt="{{ shop.name | escape }}" style="width: {{ section.settings.logo_width | escape }}px;" width="{{ section.settings.logo_src.width }}" height="{{ section.settings.logo_src.height }}" {% if section.settings.logo_mobile_src != blank %} class="hide-on-big-palm" {% endif %} />
+							{%- if section.settings.logo_mobile_src != blank -%}
+								<img src="{{ section.settings.logo_mobile_src | image_url }}" alt="{{ shop.name | escape }}"  width="{{ section.settings.logo_mobile_src.width }}" height="{{ section.settings.logo_mobile_src.height }}" class="show-on-big-palm" />
+							{%- endif -%}
+						</a>
+					{%- else -%}
+						<a class="logo__text" href="{{ routes.root_url }}">{{ shop.name | escape }}</a>
+					{%- endif -%}
+				</div>
+	    </header>
+
+	    <div class="sidebar__responsive-handles">
+
+				{%- if section.settings.show_search -%}
+					<span class="sidebar__search-handle" tabindex="0">
+						<span class="icon icon-search" aria-hidden="true">{%- render 'theme-symbols', icon: 'search' -%}</span>
+					</span>
+				{%- endif -%}
+
+				<a href="{{ routes.cart_url }}" class="sidebar__cart-handle" title="{{ 'cart.title' | t }}">
+					<span class="visually-hidden">{{ 'cart.title' | t }}</span>
+					<span class="icon icon-cart" aria-hidden="true" style="height: 28px;">{%- render 'theme-symbols', icon: 'cart' -%}</span>
+					<span class="count" aria-hidden="true" data-header-cart-count>{{ cart.item_count }}</span>
+				</a>
+
+				<span class="sidebar__menu-handle" tabindex="0">
+					<span class="icon icon-menu" aria-hidden="true">{% render 'theme-symbols', icon: 'burger' %}</span>
+				</span>
+
+			</div>
+
+	    <sidebar-drawer style="display:block" data-overlay="sidebar" class="sidebar__menus {% if section.settings.show_search %} search-bottom-padding {% endif %}">
+
+				<span class="sidebar__menus-close hidden sidebar-close-element" data-js-close tabindex="0">
+					<span class="visually-hidden">{{ 'general.accessibility_labels.close' | t }}</span>
+					<span aria-hidden="true">{%- render 'theme-symbols', icon: 'close' -%}</span>
+				</span>
+
+				<span class="sidebar__menus-back hidden" tabindex="0">
+					<span class="visually-hidden">{{ 'general.accessibility_labels.back' | t }}</span>
+					<span aria-hidden="true">{% render 'theme-symbols', icon: 'arrow-left' %}</span>
+				</span>
+
+		    <nav class="primary-menu">
+					{%- render 'sidebar-navigation', menu: section.settings.menu_primary, type: 'primary' -%}
+	    	</nav>
+
+	    	<nav class="secondary-menu">
+
+					{%- render 'sidebar-navigation', menu: section.settings.menu_secondary, type: 'secondary' -%}
+
+					{%- if shop.customer_accounts_enabled -%}
+		    		<ul class="sidebar__menu accounts-menu">
+		    			<li>
+			    			{%- if customer -%}
+			    				<a href="{{ routes.account_url }}"><span class="underline-animation">{{ 'general.account_link.logged_in' | t }}</span></a>
+		    				{%- else -%}
+			    				<a href="{{ routes.account_login_url }}"><span class="underline-animation">{{ 'general.account_link.logged_out' | t }}</span></a>
+								{%- endif -%}
+							</li>
+		    		</ul>
+	    		{%- endif -%}
+
+					<div class="localization-form-holder">
+			      {%- render 'localization-form', location: 'sidebar', show_country_selector: section.settings.show_country_selector, show_locale_selector: section.settings.show_locale_selector -%}
+			    </div>
+
+	    	</nav>
+
+	    </sidebar-drawer>
+
+			{%- unless template contains 'cart' -%}
+				<sidebar-drawer style="display:none" class="sidebar__cart sidebar-parent-element" data-overlay="cart">
+					<div class="sidebar-element">
+						<span class="sidebar__cart-close sidebar-close-element" data-js-close tabindex="0">
+							<span class="visually-hidden">{{ 'general.accessibility_labels.close' | t }}</span>
+							<span aria-hidden="true">{%- render 'theme-symbols', icon: 'close' -%}</span>
+						</span>
+						<div class="sidebar-content-element">
+							{%-  render 'foundry-basket-builder' -%}
+							{%- render 'cart-form', location: 'sidebar' -%}
+							{%- render 'cart-subtotal' -%}
+						</div>
+					</div>
+				</sidebar-drawer>
+  			<link rel="stylesheet" href="{{ 'component-cart.css' | asset_url }}" media="print" onload="this.media='all';">
+			{%- endunless -%}
+
+			{%- if section.settings.show_search -%}
+  			{{ 'component-search-form.css' | asset_url | stylesheet_tag }}
+				<sidebar-drawer style="display:none" class="sidebar__search sidebar-parent-element predictive-search" data-overlay="cart">
+					<search-form>
+						{%- render 'search-form' -%}
+						<span class="sidebar__search-close sidebar-close-element" data-js-close tabindex="0">
+							<span class="visually-hidden">{{ 'general.accessibility_labels.close' | t }}</span>
+							<span aria-hidden="true">{%- render 'theme-symbols', icon: 'close' -%}</span>
+						</span>
+						<div class="sidebar__search-container" data-js-search-results data-js-search-results-holder></div>
+					</search-form>
+				</sidebar-drawer>
+  			<link rel="stylesheet" href="{{ 'component-search-item.css' | asset_url }}" media="print" onload="this.media='all';">
+			{%- endif -%}
+
+		</div>
+	</div>
+
+	<div class="sidebar__seconds sidebar-parent-element"><div class="sidebar-element"><div class="sidebar__menu"></div></div></div>
+	<div class="sidebar__thirds sidebar-parent-element"><div class="sidebar-element"><div class="sidebar__menu"></div></div></div>
+
+</main-sidebar>
+
+<script src="{{ 'section-sidebar.js' | asset_url }}" defer></script>
+
+{% schema %}
+  {
+    "name": "t:sections.sidebar.name",
+    "class": "mount-sidebar mount-overlay",
+    "settings": [
+      {
+        "type": "image_picker",
+        "id": "logo_src",
+        "label": "t:sections.sidebar.settings.image.label"
+      },
+      {
+        "type": "range",
+        "id": "logo_width",
+        "label": "t:sections.sidebar.settings.image_width.label",
+        "min": 50,
+        "max": 250,
+        "step": 2,
+        "default": 100,
+        "unit": "px"
+      },
+      {
+        "type": "image_picker",
+        "id": "logo_mobile_src",
+        "label": "t:sections.sidebar.settings.mobile_logo.label",
+        "info": "t:sections.sidebar.settings.mobile_logo.info"
+      },
+      {
+        "type": "link_list",
+        "id": "menu_primary",
+        "label": "t:sections.sidebar.settings.primary_navigation.label",
+        "default": "main-menu"
+      },
+      {
+        "type": "link_list",
+        "id": "menu_secondary",
+        "label": "t:sections.sidebar.settings.secondary_navigation.label"
+      },
+      {
+        "type": "header",
+        "content": "t:sections.footer.settings.language_selector.content",
+        "info": "t:sections.footer.settings.language_selector.info"
+      },
+      {
+        "type": "checkbox",
+        "id": "show_locale_selector",
+        "label": "t:sections.footer.settings.language_selector_show.label",
+        "default": false
+      },
+      {
+        "type": "header",
+        "content": "t:sections.footer.settings.country_selector.content",
+        "info": "t:sections.footer.settings.country_selector.info"
+      },
+      {
+        "type": "checkbox",
+        "id": "show_country_selector",
+        "label": "t:sections.footer.settings.country_selector_show.label",
+        "default": false
+      },
+      {
+        "type": "header",
+        "content": "t:sections.sidebar.settings.search.content"
+      },
+      {
+        "type": "checkbox",
+        "id": "show_search",
+        "label": "t:sections.sidebar.settings.search.label",
+        "default": true
+      }
+    ]
+  }
+{% endschema %}

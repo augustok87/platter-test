@@ -1,0 +1,25 @@
+<div class="page-content">
+
+	<div class="centered-section-content">
+
+		<div>
+
+			{%- render 'breadcrumb' -%}
+			<h1 class="title h0" style="margin-bottom:var(--compact-header-padding)">{{ 'general.404.title' | t }}</h1>
+			<p class="subtitle">{{ 'general.404.subtitle' | t }}</p>
+
+			<div class="gutter--on">
+				<div class="search-page-form">
+					{%- liquid
+			      assign search_label = 'search.page.search_button_label' | t 
+				    assign search_placeholder = 'search.page.form_placeholder' | t
+				    render 'search-form', search_label: search_label, search_placeholder: search_placeholder 
+			    -%}
+				</div>
+			</div>
+
+		</div>
+
+	</div>
+
+</div>

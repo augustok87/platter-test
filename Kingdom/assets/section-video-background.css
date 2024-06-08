@@ -1,0 +1,138 @@
+.video-text__container > a, .video-text__container > div {
+  overflow: hidden;
+}
+.video-text__container > a .lazy-image--background, .video-text__container > div .lazy-image--background {
+  -webkit-backface-visibility: hidden;
+  transform: scale(1);
+  overflow: hidden;
+  transition: background 200ms linear, transform 300ms linear;
+}
+.no-touchevents .video-text__container > a:hover .lazy-image--background, .no-touchevents .video-text__container > div:hover .lazy-image--background, .focus .video-text__container > a .lazy-image--background, .focus .video-text__container > div .lazy-image--background {
+  transform: scale(1.1);
+}
+
+.video-text__background {
+  position: absolute;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  z-index: -1;
+}
+.video-text__background:before {
+  position: absolute;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  content: "";
+  opacity: 0.36;
+  z-index: 9;
+}
+
+.video-text {
+  position: relative;
+}
+
+.video-text__button,
+.video-text__body {
+  margin-bottom: 2em;
+}
+
+.video-text__container {
+  position: absolute;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  position: relative;
+  overflow: hidden;
+  height: 0;
+}
+.video-text__container > a, .video-text__container > div {
+  position: absolute;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+}
+
+.video-text__content {
+  position: absolute;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  padding: var(--horizontal-padding);
+}
+.video-text__content > div > *:last-child {
+  margin-bottom: 0;
+}
+
+.video-text__title {
+  margin-bottom: 0.6em;
+}
+.video-text__title:first-child:last-child {
+  margin-bottom: 0;
+}
+.video-text__title span {
+  background-position: 0 calc(1em + 6px);
+  background-image: linear-gradient(to right, rgba(var(--color-body-txt), 1), rgba(var(--color-body-txt), 1));
+  background-size: 0% 2px;
+  background-repeat: no-repeat;
+  display: inline;
+  padding-bottom: 3px;
+  transition: all 150ms linear;
+}
+a:hover .video-text__title span, a.selected .video-text__title span {
+  background-size: 100% 2px;
+}
+.touchevents a .video-text__title span {
+  background-size: 100% 2px;
+  position: relative;
+  bottom: 2px;
+}
+.video-text__title span > *:last-child {
+  margin-bottom: 0;
+}
+@media screen and (max-width: 648px) {
+  .video-text__title {
+    margin-bottom: 0;
+  }
+}
+
+.video-text__body.h2, .video-text__body.h1 {
+  line-height: 1.8;
+}
+.video-text__body + .button {
+  margin-top: 1.5em;
+}
+
+.video-text__background {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+}
+.gutter--on .video-text__background {
+  width: calc(100% - var(--horizontal-padding) * 2);
+  left: var(--horizontal-padding);
+}
+.video-text__background video {
+  position: absolute;
+  opacity: 0;
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+  transition: opacity 200ms linear;
+}
+.video-text__background video + .video-text__image {
+  display: none;
+}
+.video-text__background.loaded video {
+  opacity: 1;
+}
+@media screen and (max-width: 768px) {
+  .video-text__background[data-height="70vh"] {
+    height: 55vh;
+  }
+}

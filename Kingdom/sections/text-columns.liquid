@@ -1,0 +1,139 @@
+{%- if section.blocks.size > 0 -%}
+    
+  <div id="text-w-images-{{ section.id }}" class="content-section text-w-image {% if section.settings.color_bg != 'rgba(0,0,0,0)' %} gutter--off parent-has-inner-padding {% else %} gutter--on {% endif %}" data-size="{{ section.blocks.size }}">
+
+    <script class="gutter-script">
+      {%- if section.settings.color_bg != 'rgba(0,0,0,0)' -%}
+        document.getElementById('text-w-images-{{ section.id }}').parentElement.classList.add('has-inner-padding');
+      {%- else -%}
+        document.getElementById('text-w-images-{{ section.id }}').parentElement.classList.add('with-gutter');
+      {%- endif -%}
+    </script>
+
+    {%- for block in section.blocks -%}
+
+      <div class="text-w-image__container" {{ block.shopify_attributes }}>
+
+        <div class="text-w-image__content">
+
+          <{{ section.settings.seo_h_tag }} class="text-w-image__title h2">{{ block.settings.title | escape }}</{{ section.settings.seo_h_tag }}>
+          <div class="text-w-image__rte rte">{{ block.settings.body }}</div>
+
+        </div>
+
+      </div>
+      
+    {%- endfor -%}
+
+  </div>
+
+  {%- if section.settings.color_bg != 'rgba(0,0,0,0)' -%}
+    {% style %}
+      #text-w-images-{{ section.id }} {
+        background: {{ section.settings.color_bg }};
+        padding-top: var(--vertical-padding-more);
+        padding-bottom: var(--vertical-padding-more);
+      }
+    {% endstyle %}
+  {%- endif -%}
+
+  {%- if section.settings.color_text != 'rgba(0,0,0,0)' -%}
+    {% style %}
+      #text-w-images-{{ section.id }},
+      #text-w-images-{{ section.id }} a {
+        color: {{ section.settings.color_text }};
+      }
+    {% endstyle %}
+  {%- endif -%}
+
+{%- endif -%}
+
+{% schema %}
+  {
+		"name": "t:sections.text-columns.name",
+    "class": "with-gutter",
+    "max_blocks": 3,
+    "settings": [
+      {
+        "type": "header",
+        "content": "t:settings_schema.colors.name"
+      },
+      {
+        "type": "color",
+        "id": "color_text",
+        "label": "t:sections.custom-colors.text.label",
+        "default": "rgba(0,0,0,0)"
+      },
+      {
+        "type": "color",
+        "id": "color_bg",
+        "label": "t:sections.custom-colors.background.label",
+        "default": "rgba(0,0,0,0)"
+      },
+      {
+        "type": "select",
+        "id": "seo_h_tag",
+        "label": "t:sections.refactor_words.seo.label",
+        "info": "t:sections.refactor_words.seo.info",
+        "options": [
+          {
+            "value": "h1",
+            "label": "H1"
+          },
+          {
+            "value": "h2",
+            "label": "H2"
+          },
+          {
+            "value": "h3",
+            "label": "H3"
+          },
+          {
+            "value": "h4",
+            "label": "H4"
+          },
+          {
+            "value": "span",
+            "label": "span"
+          }
+        ],
+        "default": "h3"
+      }
+    ],
+    "blocks": [
+      {
+        "type": "text",
+        "name": "t:sections.text-columns-with-images.blocks.text.name",
+        "settings": [
+          {
+            "type": "text",
+            "id": "title",
+            "label": "t:sections.text-columns-with-images.blocks.text.settings.title.label",
+            "default": "Text column"
+          },
+          {
+            "type": "richtext",
+            "id": "body",
+            "label": "t:sections.text-columns-with-images.blocks.text.settings.text.label",
+            "default": "<p>Share your latest products, collections or promotions!</p>"
+          },
+          {
+            "type": "image_picker",
+            "id": "image",
+            "label": "t:sections.text-columns-with-images.blocks.text.settings.image.label"
+          }
+        ]
+      }
+    ],
+    "presets": [{
+      "name": "t:sections.text-columns.name",
+      "blocks": [{
+        "type": "text"
+      },{
+        "type": "text"
+      },{
+        "type": "text"
+      }]
+    }]
+  }
+{% endschema %}

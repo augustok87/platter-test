@@ -1,0 +1,30 @@
+{%- if product.available -%}
+  {%- if product.has_only_default_variant -%}
+    <quick-add-to-cart class="quick-add-to-cart">
+      <product-form {% if settings.cart_action == 'overlay' %} data-ajax-cart {% endif %}>
+        <div class="quick-add-to-cart-button">
+          {%- form 'product', product -%}
+            <input type="hidden" name="id" value="{{ product.selected_or_first_available_variant.id }}">
+            <button type="submit" name="add" class="product__add-to-cart button" data-js-product-add-to-cart>
+              <span class="add-to-cart__text" data-js-product-add-to-cart-text>
+                {{ 'products.grid.quick_buy' | t }}
+              </span>
+              <span class="add-to-cart__symbol" aria-hidden="true">{%- render 'theme-symbols', icon: 'cart' -%}</span>
+              <span class="add-to-cart__symbol add-to-cart__symbol--mobile" aria-hidden="true">{%- render 'theme-symbols', icon: 'cart-plus' -%}</span>
+              <span class="add-to-cart__preloader" aria-hidden="true"></span>
+            </button>
+          {%- endform -%} 
+        </div>
+      </product-form>
+    </quick-add-to-cart>
+  {%- else -%}
+    <quick-view-product class="quick-add-to-cart">
+      <button data-href="{{ product.url }}" class="product__add-to-cart button" data-js-product-add-to-cart data-id="{{ product.id }}">
+        <span class="add-to-cart__text">{{ 'products.grid.quick_view' | t }}</span>
+        <span class="add-to-cart__symbol add-to-cart__symbol--mobile" aria-hidden="true">{%- render 'theme-symbols', icon: 'cart-plus' -%}</span>
+        <span class="add-to-cart__symbol" aria-hidden="true">{%- render 'theme-symbols', icon: 'cart' -%}</span>
+        <span class="add-to-cart__preloader" aria-hidden="true"></span>
+      </button>
+    </quick-view-product>
+  {%- endif -%}
+{%- endif -%}

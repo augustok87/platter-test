@@ -1,0 +1,14 @@
+<product-quantity class="product__quantity" {% unless variant.available %} style="display:none" {% endunless %}>
+
+  <button class="quantity__minus" aria-hidden="true" tabindex="-1">
+    {%- render 'theme-symbols', icon: 'minus' -%}
+  </button>
+
+  <label for="qty-{{ id }}" class="visually-hidden">{{ 'general.accessibility_labels.quantity' | t }}</label>
+  <input type="number" name="quantity" value="1" min="1" class="quantity__selector" id="qty-{{ id }}">
+
+  <button class="quantity__plus" aria-hidden="true" tabindex="-1">
+    {%- render 'theme-symbols', icon: 'plus' -%}
+  </button>
+
+</product-quantity>

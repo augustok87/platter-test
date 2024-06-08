@@ -1,0 +1,96 @@
+{% assign product_splash_list = product.metafields.foundry.product_splash_list.value %}
+{% if product_splash_list != blank %}
+
+{% assign atc_variant = product.selected_or_first_available_variant %}
+{% assign handle = atc_variant.id %}
+{% for product_splash in product_splash_list %}
+  <style>
+    .product-splash[data-handle="{{ product_splash.handle }}"] {
+      position: relative;
+      min-height: 500px;
+      width: 100%;
+    }
+
+    .product-splash__media img,
+    .product-splash__media video {
+      max-height: 700px;
+      width: 100%;
+      object-fit: cover;
+      object-position: bottom;
+      filter: brightness(0.8);
+    }
+
+    .product-splash__container {
+      position: absolute;
+      top: 0;
+      width: 100%;
+      height: 100%;
+      display: flex;
+      align-items: center;
+      justify-content: {{ product_splash.alignment | default: 'left' }};
+    }
+
+    .product-splash__content {
+      padding: 0 4%;
+      width: 50%;
+      color: white;
+      text-align: {{ product_splash.alignment | default: 'left' }};
+    }
+
+    .product-splash__heading {
+      font-size: 2em;
+      line-height: 1.2em;
+      font-weight: bold;
+    }
+
+    @media screen and (max-width: 768px) {
+      .product-splash__container {
+        position: inherit;
+      }
+
+      .product-splash__content {
+        color: black;
+        width: auto;
+        padding: 0;
+        margin: 2em;
+        text-align: left;
+      }
+
+      .add-to-cart-button__container[data-handle="{{ handle }}"] button {
+        filter: invert();
+      }
+    }
+  </style>
+
+
+  <div class="product-splash" data-handle="{{ product_splash.handle }}">
+    <div class="product-splash__media">
+      {{ product_splash.image.value | media_tag: image_size: '800x', autoplay: true, muted: true, controls: false }}
+    </div>
+    <div class="product-splash__container">
+      <div class="product-splash__content">
+        <div class="product-splash__heading">{{ product_splash.heading }}</div>
+        <div class="product-splash__description">{{ product_splash.description }}</div>
+        {% if product_splash.add_to_cart_button_enabled %}
+          {% render 'foundry-atc-button-only', atc_variant: atc_variant, handle: handle %}
+        {% endif %}
+      </div>
+    </div>
+  </div>
+{% endfor %}
+{% endif %}
+
+{% schema %}
+{
+  "name": "Foundry Product Splash",
+  "settings": [],
+  "presets": [
+    {
+      "name": "Foundry Product Splash"
+    }
+  ],
+  "enabled_on": {
+    "templates": ["product"]
+  }
+}
+{% endschema %}

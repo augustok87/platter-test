@@ -1,0 +1,93 @@
+.featured-product .product-title-helper {
+  font-weight: var(--font-weight-headings);
+  display: block;
+  width: 100%;
+  margin-bottom: 35px;
+}
+.featured-product .onboarding-svg svg {
+  background: rgba(0, 0, 0, 0.25);
+}
+.featured-product.gutter--on {
+  padding-left: var(--horizontal-padding);
+  padding-right: var(--horizontal-padding);
+}
+.featured-product .product__gallery {
+  position: relative;
+  order: -1;
+}
+.featured-product .product__text {
+  min-height: 0;
+  max-width: none;
+  position: relative;
+  width: 45%;
+  min-width: 0;
+  padding-top: calc(var(--vertical-padding) / 4);
+  padding-inline-end: 0;
+  padding-bottom: 0;
+  padding-inline-start: var(--horizontal-padding);
+}
+@media screen and (min-width: 949px) {
+  .featured-product .product-gallery .product-gallery__item {
+    opacity: 1 !important;
+  }
+  .featured-product .css-slider-dot-navigation {
+    transform: translateX(-50%);
+  }
+}
+@media screen and (max-width: 1023px) {
+  .featured-product {
+    flex-direction: column !important;
+  }
+  .featured-product .product-gallery--fill .product-gallery__item {
+    height: 100%;
+  }
+  .featured-product .css-slider-navigation-container {
+    transform: none !important;
+  }
+  .featured-product .css-slider-dot-navigation {
+    transform: translateX(0%);
+  }
+  .featured-product .product__text {
+    width: 100%;
+    padding-top: 65px;
+  }
+  html[dir=rtl] .featured-product .product__text {
+    padding-right: 0;
+  }
+  html[dir=ltr] .featured-product .product__text {
+    padding-left: 0;
+  }
+}
+@media screen and (min-width: 1024px) {
+  .featured-product .product-gallery {
+    transition: height 200ms linear;
+  }
+  .featured-product .product-gallery__thumbnails--dots {
+    margin-top: 20px;
+  }
+}
+@media screen and (min-width: 949px) {
+  .featured-product .product__gallery {
+    padding-top: var(--vertical-padding);
+    margin-top: calc(var(--vertical-padding) * -1);
+  }
+  .featured-product .product-gallery__item[data-product-media-type=image] {
+    width: 100% !important;
+    height: auto !important;
+    display: block !important;
+  }
+}
+@media screen and (max-width: 768px) {
+  .featured-product .css-slider-navigation-container {
+    margin-inline-start: auto;
+  }
+}
+@media screen and (max-width: 648px) {
+  .featured-product .product__text {
+    padding-top: 35px;
+  }
+}
+
+.featured-product .product-gallery .css-slider-container {
+  align-items: flex-start;
+}

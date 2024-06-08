@@ -1,0 +1,121 @@
+.article {
+  margin-bottom: var(--vertical-padding);
+}
+.article svg path {
+  fill: rgba(var(--color-body-txt), 1);
+  transition: all 100ms linear;
+}
+.article .full-width-section-content .article__header:not(:first-child) .compact-header {
+  padding-top: 0;
+}
+.article .full-width-section-content .article-element:first-child:not(.article__header) {
+  margin-top: var(--compact-header-padding);
+}
+
+.article-meta {
+  margin-top: 1.5em;
+  opacity: 0.36;
+  font-style: italic;
+  display: block;
+}
+@media screen and (min-width: 1921px) {
+  .article-meta {
+    font-size: calc(15px / 14 * var(--base-body-size) + 0px);
+    line-height: 1;
+  }
+}
+@media screen and (min-width: 1280px) and (max-width: 1920px) {
+  .article-meta {
+    font-size: calc(14px / 14 * var(--base-body-size) + 0px);
+    line-height: 1;
+  }
+}
+@media screen and (min-width: 1023px) and (max-width: 1280px) {
+  .article-meta {
+    font-size: calc(13px / 14 * var(--base-body-size) + 0px);
+    line-height: 1;
+  }
+}
+@media screen and (max-width: 1023px) {
+  .article-meta {
+    font-size: calc(12px / 14 * var(--base-body-size) + 0px);
+    line-height: 1;
+  }
+}
+.article-meta > span:not(:last-child) {
+  margin-inline-end: 25px;
+}
+
+.article-element {
+  margin-bottom: 2.5em;
+}
+
+.article__header .compact-header {
+  padding-left: 0;
+  padding-right: 0;
+  padding-bottom: 0;
+}
+
+.article__image {
+  position: relative;
+  height: auto;
+}
+
+.article__navigation a {
+  margin-bottom: 0;
+}
+
+.article__navigation {
+  display: flex;
+  justify-content: space-between;
+}
+.article__navigation a {
+  margin-inline-start: 0 !important;
+  margin-inline-end: 0 !important;
+  display: inline-flex;
+  gap: 20px;
+}
+html[dir=rtl] .article__navigation a span[aria-hidden] {
+  transform: scaleX(-1);
+}
+.article__navigation a .text {
+  top: -7px;
+}
+@media screen and (max-width: 480px) {
+  .article__navigation a .text {
+    display: none;
+  }
+}
+
+.article__comments {
+  margin-top: var(--vertical-padding);
+}
+
+.comments__form {
+  margin-top: var(--vertical-padding);
+}
+.comments__form small {
+  margin-top: 1em;
+  display: block;
+}
+
+.comments {
+  list-style: none;
+  margin-top: 30px;
+}
+
+.comment:not(:last-child) {
+  margin-bottom: 40px;
+}
+.comment > span {
+  display: block;
+}
+
+.comment__author {
+  font-weight: var(--font-weight-body-semibold);
+  margin-bottom: 0.3em;
+}
+
+.comment__content {
+  margin-top: 1em;
+}

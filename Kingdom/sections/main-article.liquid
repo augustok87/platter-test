@@ -1,0 +1,264 @@
+{{ 'section-main-article.css' | asset_url | stylesheet_tag }}
+
+<div class="full-width-section-content gutter--on">
+
+  {%- capture date_format -%} {{ 'general.date_format.month_day_year' | t }} {%- endcapture -%}
+
+  {%- for block in section.blocks -%}
+
+    {%- case block.type -%}
+
+      {%- when 'featured_image' -%}
+
+        {%- if article.image -%}
+          <div class="article__image article-element">
+            {%- liquid
+              assign sizes = 'sizes="(max-width: 948px) calc(100vw - 20px), calc(100vw - 200px)"'
+              render 'lazy-image', image: article.image, alt: article.title, sizes: sizes
+            -%}
+          </div>
+        {%- endif -%}
+
+      {%- when 'title' -%}
+
+        <header class="article__header article-element">
+          
+          <div class="compact-header">
+            <div class="compact-header-container">
+              {%- render 'breadcrumb' -%}
+              <h1 class="article__title h0">{{ article.title | escape }}</h1>
+            </div>
+          </div>
+
+          <div class="article-meta">
+
+            {% if block.settings.blog_show_date %}
+              <span class="article-meta__date">{{ article.published_at | time_tag: date_format }}</span>
+            {% endif %}
+
+            {% if block.settings.blog_show_author %}
+              <span class="article-meta__author">{{ 'general.prefixes.by' | t }} {{ article.author | escape }}</span>
+            {% endif %}
+
+            {% if block.settings.blog_show_comments and blog.comments_enabled? %}
+              <span class="article-meta__comments">
+                <a href="#comments">
+                  {{ 'blog.grid.comments_count' | t: count: article.comments_count }}
+                  <span class="hidden" aria-hidden="true">{{ article.comments_count }}</span>
+                </a>
+              </span>
+            {% endif %}
+
+          </div>
+
+        </header>
+
+      {%- when 'content' -%}
+
+        <section class="article__body article-element">
+          <div class="rte">{{ article.content }}</div>
+        </section>
+
+      {%- when 'social_sharing' -%}
+        <aside class="article__sharing article-element">
+          {%- render 'share-popup', title: article.title, url: article.url, image: article.image -%}
+        </aside>
+
+      {%- when 'blog_navigation' -%}
+        {%- if blog.next_article or blog.previous_article -%}
+          <nav class="article__navigation article-element">
+            {%- if blog.next_article -%}
+              <a class="share__link previous-article" href="{{ blog.next_article }}" title="{{ 'blog.article.previous_article_link' | t }}"> 
+                <span aria-hidden="true">{%- render 'theme-symbols', icon: 'arrow-left' -%}</span> 
+                <span class="text">{{ 'blog.article.previous_article_link' | t }}</span>
+              </a>
+            {%- endif -%}
+            {%- if blog.previous_article -%}
+              <a class="share__link next-article" href="{{ blog.previous_article }}" title="{{ 'blog.article.next_article_link' | t }}"> 
+                <span class="text">{{ 'blog.article.next_article_link' | t }}</span>
+                <span aria-hidden="true">{%- render 'theme-symbols', icon: 'arrow-right' -%}</span>
+              </a>
+            {%- endif -%}
+          </nav>
+        {%- endif -%}
+
+    {%- endcase -%}
+
+  {%- endfor -%}
+
+  {%- if blog.comments_enabled? -%}
+
+    <aside id="comments" class="article__comments">
+
+      <h4 class="h2">{{ 'blog.article.comments_list_title' | t }} ({{ article.comments_count }})</h4>
+
+      {%- paginate article.comments by 10 -%}
+
+        {%- if article.comments_count > 0 -%}
+
+          <ul id="comments" class="comments">
+            {%- for comment in article.comments -%}
+              <li id="{{ comment.id }}" class="comment">
+                <span class="comment__author h5">{{ comment.author | escape }}</span>
+                <span class="comment__date body-text-sm">{{ comment.created_at | time_tag: date_format }}</span>
+                <div class="comment_content">{{ comment.content }}</div>
+              </li>
+            {%- endfor -%}
+          </ul>
+
+          {%- liquid
+            if paginate.pages > 1
+              render 'pagination', paginate: paginate
+            endif
+          -%}
+
+        {%- else -%}
+
+          <p>{{ 'blog.article.no_comments_message' | t }}</p>
+
+        {%- endif -%}
+
+        <div id="comments-form" class="comments__form">
+
+          {%- form 'new_comment', article, class: 'simple-form' -%}
+
+            <h4 class="h2" id="add-comment">{{ 'blog.article.comments_form_title' | t }}</h4>
+
+            {%- render 'form-errors', form: form -%}
+
+            {%- if form.posted_successfully? -%}
+              <p class="alert body-text-sm alert--success">
+                {%- liquid
+                  if blog.moderated?
+                    echo 'blog.article.comment_under_moderation' | t 
+                  else
+                    echo 'blog.article.comment_posted' | t
+                  endif
+                -%}
+              </p>
+            {%- endif -%}
+
+            <div class="simple-form-field">
+              <div class="simple-form-grid">
+                <div>
+                  <label for="comment-author" class="hidden">{{ 'blog.article.comments_form_name_label' | t }}</label>
+                  <input {% if form.errors contains "author" %} class="error"{% endif %} type="text" name="comment[author]" placeholder="{{ 'blog.article.comments_form_name_label' | t }}" id="comment-author" value="{{ form.author }}" autocapitalize="words">
+                </div>
+                <div>
+                  <label for="comment-email" class="hidden">{{ 'blog.article.comments_form_email_label' | t }}</label>
+                  <input {% if form.errors contains "email" %} class="error"{% endif %} type="email" name="comment[email]" placeholder="{{ 'blog.article.comments_form_email_label' | t }}" id="comment-email" value="{{ form.email }}" autocorrect="off" autocapitalize="off">
+                </div>
+              </div>
+            </div>
+
+            <div class="simple-form-field">
+              <label for="comment-body" class="hidden">{{ 'blog.article.comments_form_message_label' | t }}</label>
+              <textarea {% if form.errors contains "body" %} class="error"{% endif %} name="comment[body]" id="comment-body" placeholder="{{ 'blog.article.comments_form_message_label' | t }}">{{ form.body }}</textarea>
+            </div>
+
+            <input type="submit" class="button button--solid" style="width: 100%;" value="{{ 'blog.article.comments_form_submit_label' | t }}">
+
+            {%- if blog.moderated? -%}
+              <small><em>{{ 'blog.article.comments_notice' | t }}</em></small>
+            {%- endif -%}
+
+            {%- if form.errors -%}
+              <script>
+                window.location.hash = '#add-comment';
+              </script>
+            {%- endif -%}
+
+            {%- if form.posted_successfully? -%}
+              <script>
+                window.location.hash = '#comments';
+              </script>
+            {%- endif -%}
+
+          {%- endform -%}
+
+        </div>
+
+      {%- endpaginate -%}
+
+    </aside>
+
+  {%- endif -%}
+
+</div>
+
+{% schema %}
+	{
+    "name": "t:sections.main-article.name",
+    "class": "article",
+    "tag": "article",
+    "blocks": [
+      {
+        "type": "featured_image",
+        "name": "t:sections.main-article.blocks.featured_image.name",
+        "limit": 1,
+        "settings": [
+          {
+            "type": "select",
+            "id": "image_height",
+            "label": "t:sections.main-article.blocks.featured_image.settings.image_height.label",
+            "options": [
+              {
+                "value": "adapt",
+                "label": "t:sections.main-article.blocks.featured_image.settings.image_height.options__1.label"
+              },
+              {
+                "value": "medium",
+                "label": "t:sections.main-article.blocks.featured_image.settings.image_height.options__2.label"
+              },
+              {
+                "value": "large",
+                "label": "t:sections.main-article.blocks.featured_image.settings.image_height.options__3.label"
+              }
+            ],
+            "default": "medium"
+          }
+        ]
+      },
+      {
+      "type": "title",
+        "name": "t:sections.main-article.blocks.title.name",
+        "limit": 1,
+        "settings": [
+          {
+            "type": "checkbox",
+            "id": "blog_show_date",
+            "label": "t:sections.main-article.blocks.title.settings.blog_show_date.label",
+            "default": true
+          },
+          {
+            "type": "checkbox",
+            "id": "blog_show_author",
+            "label": "t:sections.main-article.blocks.title.settings.blog_show_author.label",
+            "default": true
+          },
+          {
+            "type": "checkbox",
+            "id": "blog_show_comments",
+            "label": "t:sections.main-article.blocks.title.settings.blog_show_comments.label",
+            "default": false
+          }
+        ]
+      },
+      {
+        "type": "content",
+        "name": "t:sections.main-article.blocks.content.name",
+        "limit": 1
+      },
+      {
+        "type": "social_sharing",
+        "name": "t:sections.main-article.blocks.social_sharing.name",
+        "limit": 1
+      },
+      {
+        "type": "blog_navigation",
+        "name": "t:sections.main-article.blocks.blog_navigation.name",
+        "limit": 1
+      }
+    ]
+  }
+{% endschema %}

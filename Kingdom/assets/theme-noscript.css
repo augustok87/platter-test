@@ -1,0 +1,46 @@
+.sidebar-parent-element {
+  position: static;
+  width: 100%;
+  height: auto;
+  visibility: visible;
+}
+
+.sidebar__submenu .sub-menu {
+  opacity: 1;
+  visibility: visible;
+  transform: none;
+  padding-left: 20px;
+}
+html[dir=rtl] .sidebar__submenu .sub-menu {
+  padding-right: 20px;
+  padding-left: 0;
+}
+
+.submenu-arrow {
+  display: none;
+}
+
+.sidebar__submenu.sidebar__submenu--second {
+  height: auto;
+}
+
+.sidebar__submenu.sidebar--secondary {
+  margin-top: 0;
+}
+
+.truncated {
+  overflow: visible;
+  max-height: none !important;
+}
+.truncated:after {
+  display: none;
+}
+
+.collection__filters, .product-variants,
+.quantity__minus, .quantity__plus {
+  display: none;
+}
+
+.productSelect {
+  display: block !important;
+}

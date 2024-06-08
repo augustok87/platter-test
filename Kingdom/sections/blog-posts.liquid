@@ -1,0 +1,181 @@
+{{ 'component-blog-item.css' | asset_url | stylesheet_tag }}
+
+<div class="content-section full-width-section-content gutter--on blog-posts">
+
+  <div class="blog-posts__header rte">
+    
+    {%- unless section.settings.title == blank -%}
+      <{{ section.settings.seo_h_tag }} class="blog-posts__title h1" style="flex: 1;">{{ section.settings.title | escape }}</{{ section.settings.seo_h_tag }}>
+    {%- endunless -%}
+
+    {%- if section.settings.show_view_all -%}
+      <span>
+        <a href="{{ blogs[section.settings.blog].url }}">{{ 'blog.view_all_articles' | t }}</a>
+      </span>
+    {%- endif -%}
+
+  </div>
+
+  {%- unless section.settings.blog == blank -%}
+
+    <{%- if section.settings.layout contains 'slider' -%}
+      css-slider data-options='{
+        "selector": ".blog-item",
+        "navigation": false,
+        "groupCells": true
+      }'
+      style="display:block"
+      {%- else -%}
+        div
+      {% endif %}
+      class="blog--{{ section.settings.layout }} blog--images-{{ section.settings.blog_show_image }} css-slider--simple-dots"
+      data-limit="{{ blogs[section.settings.blog].articles.size }}"
+    >
+      {%- liquid
+        for article in blogs[section.settings.blog].articles limit: section.settings.post_limit
+          render 'blog-item', article: article, layout: section.settings.layout, show_image: section.settings.show_image, blocks: section.blocks, index: forloop.index
+        endfor
+      -%}
+    </{% if section.settings.layout contains 'slider' %}css-slider{% else %}div{% endif %}>
+
+  {%- else -%}
+    <p class="no-content-message">{{ 'blog.grid.no_articles_text' | t }}</p>
+  {%- endunless -%} 
+
+</div>
+
+{% schema %}
+  {
+    "name": "t:sections.blog-posts.name",
+    "class": "overflow-hidden with-gutter",
+    "blocks": [
+      {
+        "type": "title",
+        "name": "t:sections.blog-posts.blocks.title.name",
+        "limit": 1
+      },
+      {
+        "type": "info",
+        "name": "t:sections.blog-posts.blocks.info.name",
+        "limit": 1,
+        "settings": [
+          {
+            "type": "checkbox",
+            "id": "show_date",
+            "label": "t:sections.blog-posts.blocks.info.settings.show_date.label",
+            "default": true
+          },
+          {
+            "type": "checkbox",
+            "id": "show_author",
+            "label": "t:sections.blog-posts.blocks.info.settings.show_author.label",
+            "default": false
+          }
+        ]
+      },
+      {
+        "type": "summary",
+        "name": "t:sections.blog-posts.blocks.summary.name",
+        "limit": 1
+      },
+      {
+        "type": "link",
+        "name": "t:sections.blog-posts.blocks.link.name",
+        "limit": 1
+      }
+    ],
+    "settings": [
+      {
+        "type": "text",
+        "id": "title",
+        "label": "t:sections.blog-posts.settings.title.label",
+        "default": "Latest Articles"
+      },
+      {
+        "type": "blog",
+        "id": "blog",
+        "label": "t:sections.blog-posts.settings.blog.label"
+      },
+      {
+        "type": "range",
+        "id": "post_limit",
+        "label": "t:sections.blog-posts.settings.post_limit.label",
+        "min": 1,
+        "max": 16,
+        "step": 1,
+        "default": 4
+      },
+      {
+        "type": "checkbox",
+        "id": "show_image",
+        "label": "t:sections.blog-posts.settings.show_image.label",
+        "default": true
+      },
+      {
+        "type": "checkbox",
+        "id": "show_view_all",
+        "label": "t:sections.blog-posts.settings.show_view_all.label",
+        "default": true
+      },
+      {
+        "type": "select",
+        "id": "layout",
+        "label": "t:sections.blog-posts.settings.layout.label",
+        "options": [
+          {
+            "label": "t:sections.blog-posts.settings.option_2.label",
+            "value": "grid cols-2",
+            "group": "t:sections.blog-posts.settings.option_1.group"
+          },
+          {
+            "label": "t:sections.blog-posts.settings.option_3.label",
+            "value": "slider cols-4",
+            "group": "t:sections.blog-posts.settings.option_3.group"
+          }
+        ],
+        "default": "grid cols-2"
+      },
+      {
+        "type": "header",
+        "content": "t:sections.refactor_words.seo.name"
+      },
+      {
+        "type": "select",
+        "id": "seo_h_tag",
+        "label": "t:sections.refactor_words.seo.label",
+        "info": "t:sections.refactor_words.seo.info",
+        "options": [
+          {
+            "value": "h1",
+            "label": "H1"
+          },
+          {
+            "value": "h2",
+            "label": "H2"
+          },
+          {
+            "value": "h3",
+            "label": "H3"
+          },
+          {
+            "value": "h4",
+            "label": "H4"
+          },
+          {
+            "value": "span",
+            "label": "span"
+          }
+        ],
+        "default": "h2"
+      }
+    ],    
+    "presets": [{
+      "name": "t:sections.blog-posts.presets.name",
+      "blocks": [
+        {"type": "title"},
+        {"type": "info"},
+        {"type": "summary"}
+      ]
+    }]
+  }
+{% endschema %}

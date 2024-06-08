@@ -1,0 +1,25 @@
+/* EC-939: Reduced the sidebar container top padding to align it to the sidebar cart icon */
+@media screen and (min-width: 949px){
+  body:not(.overflow-hidden) .sidebar__container .sidebar__container-holder {
+    padding-top: 25px;
+  }
+  /* EC-939: Increased the space on the right of the sidebar cart icon to move it closer to the logo */
+  html[dir=ltr] .sidebar__responsive-handles .sidebar__cart-handle {
+    right: 30%;
+  }
+}
+
+.foundry-atc-button-component button {
+  background: #fff;
+  font-weight: bold;
+  color: black;
+  cursor: pointer;
+  text-transform: uppercase;
+  border: solid 2px white;
+  margin: 0.25em 0;
+}
+
+.foundry-atc-button-component button:hover {
+  background: none;
+  color: white;
+}

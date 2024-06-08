@@ -1,0 +1,225 @@
+{%- assign aspect_ratio = section.settings.gallery_aspect -%}
+
+{{ 'section-gallery.css' | asset_url | stylesheet_tag }}
+
+<masonry-gallery class="content-section gutter--off gallery gallery--grid gallery--mobile-slider-{{ section.settings.style_mobile }}" 
+  data-blocks-size="{{ section.blocks.size }}" 
+  data-slider-height="{{ section.settings.slider_height }}" 
+  data-lightbox="{{ section.settings.lightbox }}"
+  style="display:block"
+  {% if section.settings.gutter_enabled %} data-inner-gutter {% endif %}
+>
+
+  <{%- if section.settings.style_mobile -%}
+    css-slider style="display:grid" data-options='{
+      "selector": ".gallery__item",
+      "navigation": false,
+      "watchCSS": true
+    }'
+    {%- else -%}
+      div
+    {% endif %}
+    class="gallery__content css-slider--simple-dots"
+  >
+
+    {%- for block in section.blocks -%}
+    
+      <div class="gallery__item {% if block.settings.featured %} featured {% endif %}" {{ block.shopify_attributes }}>
+
+        <div class="gallery__image">
+
+          {%- liquid
+            if section.index == 1 and forloop.index <= 5
+              assign preload = true
+            else
+              assign preload = false
+            endif
+          -%}
+
+          {%- if section.settings.lightbox and block.settings.image != blank and block.settings.link == blank -%}
+            <gallery-zoom class="gallery__zoom" data-src="{{ block.settings.image | image_url }}" aria-hidden="true">
+              {%- render 'theme-symbols', icon: 'zoom-in' -%}
+            </gallery-zoom>
+          {%- endif -%}
+
+          {%- unless block.settings.image == blank -%}
+
+            {%- if block.settings.link != blank -%}
+              <a href="{{ block.settings.link }}" {% if block.settings.open_in_new_window %} target="_blank" {% endif %}>
+            {%- endif -%}
+
+              {%- if section.settings.style_mobile -%}
+                {%- if block.settings.featured -%}
+                  {%- capture sizes -%}
+                    sizes="(max-width: 948px) max(100vw, {{ section.settings.slider_height }}), (min-width: 949px) and (max-width: 1174px) calc(100vw - 200px), calc((100vw - 200px) / 2)"
+                  {%- endcapture -%}
+                {%- else -%}
+                  {%- capture sizes -%}
+                    sizes="(max-width: 948px) max(100vw, {{ section.settings.slider_height }}), (min-width: 949px) and (max-width: 1174px) calc(50vw - 200px), calc((100vw - 200px) / 4)"
+                  {%- endcapture -%}
+                {%- endif -%}
+              {%- else -%}
+                {%- liquid
+                  if block.settings.featured
+                    assign sizes = 'sizes="(max-width: 768px) 100vw, (min-width: 769px) and (max-width: 948px) 50vw, (min-width: 949px) and (max-width: 1174px) calc(100vw - 200px), calc((100vw - 200px) / 2)"'
+                  else 
+                    assign sizes = 'sizes="(max-width: 768px) 50vw, (min-width: 769px) and (max-width: 948px) 25vw, (min-width: 949px) and (max-width: 1174px) calc(50vw - 200px), calc((100vw - 200px) / 4)"'
+                  endif
+                -%}
+              {%- endif -%}
+              {%- render 'lazy-image', image: block.settings.image, type: 'image', ratio: aspect_ratio, alt: block.settings.caption, caption: block.settings.caption, sizes: sizes, preload: preload -%}
+
+            {%- if block.settings.link != blank -%}
+              </a>
+            {%- endif -%}
+
+          {%- else -%}
+
+            <span class="onboarding-svg onboarding-background" style="padding-top:{{ 100 | divided_by: aspect_ratio }}%" data-padding="{{ aspect_ratio }}">
+              {{ 'image' | placeholder_svg_tag }}
+            </span>
+
+          {%- endunless -%}
+
+        </div>
+
+      </div>
+
+    {%- endfor -%}
+
+  </{% if section.settings.style_mobile %}css-slider{% else %}div{% endif %}>
+
+</masonry-gallery>
+
+<script src="{{ 'component-lightbox.js' | asset_url }}" defer></script>
+<script src="{{ 'section-gallery.js' | asset_url }}" defer></script>
+
+{% schema %}
+  {
+    "name": "t:sections.gallery.name",
+    "class": "mount-gallery without-gutter overflow-hidden",
+    "max_blocks": 99,
+    "blocks": [
+      {
+        "type": "image",
+        "name": "t:sections.gallery.blocks.image.name",
+        "settings": [
+          {
+            "type": "image_picker",
+            "id": "image",
+            "label": "t:sections.gallery.blocks.image.settings.image.label"
+          },
+          {
+            "type": "text",
+            "id": "caption",
+            "label": "t:sections.gallery.blocks.image.settings.caption.label"
+          },
+          {
+            "type": "checkbox",
+            "id": "featured",
+            "label": "t:sections.gallery.blocks.image.settings.featured.label"
+          },
+          {
+            "type": "url",
+            "id": "link",
+            "label": "t:sections.local-extra-words.sections.announcement-bar.blocks.content.settings.link"
+          },
+          {
+            "type": "checkbox",
+            "id": "open_in_new_window",
+            "label": "t:sections.local-extra-words.sections.announcement-bar.blocks.content.settings.target",
+            "default": false
+          }
+        ]
+      }
+    ],
+    "settings": [
+      {
+        "type": "select",
+        "id": "gallery_aspect",
+        "label": "t:sections.gallery.settings.aspect_ratio.label",
+        "options": [
+          {
+            "value": "1.33333",
+            "label": "t:sections.gallery.settings.aspect_ratio.options__1.label",
+            "group": "t:sections.gallery.settings.aspect_ratio.options__1.group"
+          },
+          {
+            "value": "1",
+            "label": "t:sections.gallery.settings.aspect_ratio.options__2.label",
+            "group": "t:sections.gallery.settings.aspect_ratio.options__1.group"
+          },
+          {
+            "value": "0.83333",
+            "label": "t:sections.gallery.settings.aspect_ratio.options__3.label",
+            "group": "t:sections.gallery.settings.aspect_ratio.options__1.group"
+          },
+          {
+            "value": "0.666667",
+            "label": "t:sections.gallery.settings.aspect_ratio.options__4.label",
+            "group": "t:sections.gallery.settings.aspect_ratio.options__1.group"
+          }
+        ],
+        "default": "1"
+      },
+      {
+        "type": "checkbox",
+        "id": "style_mobile",
+        "label": "t:sections.gallery.settings.style_mobile.label",
+        "default": false
+      },
+      {
+        "type": "select",
+        "id": "slider_height",
+        "label": "t:sections.gallery.settings.slider_height.label",
+        "options": [
+          {
+            "value": "50vh",
+            "label": "t:sections.gallery.settings.slider_height.options__1.label"
+          },
+          {
+            "value": "75vh",
+            "label": "t:sections.gallery.settings.slider_height.options__2.label"
+          },
+          {
+            "value": "100vh",
+            "label": "t:sections.gallery.settings.slider_height.options__3.label"
+          }
+        ],
+        "default": "75vh"
+      },
+      {
+        "type": "checkbox",
+        "id": "lightbox",
+        "label": "t:sections.gallery.settings.lightbox.label",
+        "info": "t:sections.gallery.settings.lightbox.info",
+        "default": false
+      },
+      {
+        "type": "header",
+        "content": "t:sections.custom-gutter.heading.content"
+      },
+      {
+        "type": "checkbox",
+        "id": "gutter_enabled",
+        "label": "t:sections.custom-gutter.gutter_enabled.label"
+      }
+    ], 
+    "presets": [{
+      "name": "t:sections.gallery.presets.name",
+      "blocks": [{
+        "type": "image"
+      },{
+        "type": "image"
+      },{
+        "type": "image"
+      },{
+        "type": "image"
+      },{
+        "type": "image"
+      },{
+        "type": "image"
+      }]
+    }]
+  }
+{% endschema %}

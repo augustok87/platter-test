@@ -1,0 +1,53 @@
+{{ 'section-popup.css' | asset_url | stylesheet_tag }}
+
+{%- if section.settings.enable or request.design_mode -%}
+
+  <modal-box id="modal-{{ section.id }}" class="box__banner style--box" 
+    data-options='{
+      "show": {% unless request.design_mode %} 1 {% else %} 1000 {% endunless %},
+      "frequency": "day",
+      "type": "cookies",
+      "enabled": true
+    }'
+    data-modal-box
+    {{ block.shopify_attributes }}
+    style="display: none"
+  >
+
+    <div class="popup-content popup-content--cookie" style="
+    background-color: {{ section.settings.bg_color }};
+    text-align: center;"
+  >
+
+    <div class="popup-text" data-content>
+      <span class="h1 popup-title">{{ 'general.cookies_popup.title' | t }}</span>
+      <div class="newsletter__text rte">{{ 'general.cookies_popup.content' | t }}</div>
+
+      <div class="popup-cta-block">
+        <button class="button button--small button--solid" data-js-close data-js-cookies-accept>{{ 'general.cookies_popup.button_label' | t }}</button>
+        <button class="button button--small button--outline" data-js-close data-js-cookies-decline>{{ 'general.cookies_popup.button_label_decline' | t }}</button>
+      </div>    
+    </div>
+
+  </div>
+
+{%- endif -%}
+
+{% schema %}
+  {
+    "name": "t:sections.refactor_words.cookies_banner.name",
+    "class": "mount-popup stacked-popup cookie-popup",
+    "settings": [
+      {
+        "type": "checkbox",
+        "id": "enable",
+        "label": "t:sections.refactor_words.cookies_banner.enable",
+        "default": false
+      },
+      {
+        "type": "paragraph",
+        "content": "t:sections.cookies.cookies_info"
+      }
+    ]
+  }
+{% endschema %}

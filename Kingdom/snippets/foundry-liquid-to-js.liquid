@@ -1,0 +1,30 @@
+{% comment %}
+This will convert data from a [convertible] data object in liquid into data
+available to javascript. All data is available in the global [object] variable
+`FOUNDRY_DATA`.
+
+Example:
+```
+ render 'foundry-liquid-to-js', data: section.settings, data_key: 'my_settings'
+```
+
+The data from the `section.settings` object will now appear as an object in
+`FOUNDRY_DATA.my_settings`.
+
+From there, any subsequent javascript can access that variable at run-time.
+{% endcomment %}
+
+{% liquid
+  unless data_key
+    assign data_key = 'data'
+  endunless
+  unless data
+    assign data = '{}'
+  endunless
+%}
+
+<script type="module">
+  import { setfoundryData } from 'foundry_data';
+
+  setfoundryData("{{ data_key }}", {{ data | json }});
+</script>

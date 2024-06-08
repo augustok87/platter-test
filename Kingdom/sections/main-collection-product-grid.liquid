@@ -1,0 +1,120 @@
+{%- liquid
+  if section.settings.enable_filtering or section.settings.enable_sorting
+    echo 'component-facets.css' | asset_url | stylesheet_tag
+    render 'facets', results: collection, type: 'desktop', enable_filtering: section.settings.enable_filtering, enable_sorting: section.settings.enable_sorting
+  endif
+-%}
+
+<div id="CollectionProductGrid">
+
+  {%- paginate collection.products by section.settings.products_number -%}
+    
+    <div class="gutter--on">
+
+      <div id="main-collection-product-grid" data-id="{{ section.id }}" class="collection collection--{{ settings.grid_style }} collection--grid mount-collection">
+
+        {%- for product in collection.products -%}
+          {%- liquid
+            if forloop.index <= 3
+              assign preload = true
+            else
+              assign preload = false
+            endif
+            render 'product-item', product_collection: collection, product: product, index: forloop.index, preload: preload
+          -%}
+        {%- else -%}
+          {%- if collection.filters != empty -%}
+            {%- liquid
+              assign sort_by = collection.sort_by | default: collection.default_sort_by
+              assign terms = collection.terms | escape
+              if collection.current_vendor
+                assign terms = collection.current_vendor | escape
+              endif
+              assign results_url = '?q=' | append: terms | append: '&options%5Bprefix%5D=last&sort_by=' | append: sort_by
+            -%}
+              <p style="margin-inline-start:calc(var(--grid-gutter)/2); margin-top: 1.5em" class="no-content-message">
+                {{ 'collections.empty' | t }}<br/>
+                {{ 'collections.use_fewer_filters_html' | t: link: results_url, class: 'button--text' }}
+              </p>
+          {%- else %}
+            <p style="margin-inline-start:calc(var(--grid-gutter)/2)" class="no-content-message">
+              {{ 'products.grid.no_products_text' | t }}
+            </p>
+          {%- endif -%}
+        {%- endfor -%}
+
+      </div>
+
+      {%- liquid
+        if paginate.pages > 1
+          render 'pagination', paginate: paginate
+        endif
+      -%}
+
+    </div>
+
+  {%- endpaginate -%}
+
+</div>
+
+{%- if section.settings.enable_filtering or section.settings.enable_sorting -%}
+  <sidebar-drawer data-overlay="sidebar" class="collection__filters sidebar-parent-element" style="display:none">
+    <div class="sidebar-element sidebar-element--right-side">
+      <span class="collection__filters-close sidebar-close-element" data-js-close tabindex="0">
+        <span class="visually-hidden">{{ 'general.accessibility_labels.close' | t }}</span>
+        <span aria-hidden="true">{%- render 'theme-symbols', icon: 'close' -%}</span>
+      </span>
+      <div class="collection__filters-holder sidebar-content-element">
+        <div class="collection__filters-title body-text-sm sidebar-title-element"><span>{{ 'collections.filter_and_sort' | t }}</span></div>
+        {%- render 'facets', results: collection, enable_filtering: section.settings.enable_filtering, enable_sorting: section.settings.enable_sorting, type: 'mobile' -%}
+      </div>
+    </div>
+  </sidebar-drawer>
+  <script src="{{ 'component-facets.js' | asset_url }}" defer></script>
+{%- endif -%}
+
+{%- liquid
+  assign color_grid_bg = settings.grid_color_bg
+  assign color_grid_text = settings.grid_color_text
+-%}
+{% style %}
+  :root {
+    --color-grid-bg: {{ color_grid_bg | color_extract: 'red' }}, {{ color_grid_bg | color_extract: 'green' }}, {{ color_grid_bg | color_extract: 'blue' }};
+    --color-grid-text: {{ color_grid_text | color_extract: 'red' }}, {{ color_grid_text | color_extract: 'green' }}, {{ color_grid_text | color_extract: 'blue' }};
+  }
+{% endstyle %}
+
+{% schema %}
+  {
+    "name": "t:sections.main-collection-product-grid.name",
+    "class": "main-collection-product-grid",
+    "settings": [
+      {
+        "type": "range",
+        "id": "products_number",
+        "label": "t:sections.main-collection-product-grid.settings.products_per_page.label",
+        "min": 12,
+        "max": 48,
+        "step": 4,
+        "default": 24
+      },
+      {
+        "type": "header",
+        "content": "t:sections.main-collection-product-grid.settings.header__1.content"
+      },
+      {
+        "id": "enable_filtering",
+        "type": "checkbox",
+        "label": "t:sections.main-collection-product-grid.settings.enable_filtering.label",
+        "default": true,
+        "info": "t:sections.main-collection-product-grid.settings.enable_filtering.info"
+      },
+      {
+        "id": "enable_sorting",
+        "type": "checkbox",
+        "label": "t:sections.main-collection-product-grid.settings.enable_sorting.label",
+        "default": true
+      }
+    ]
+  }
+{% endschema %}

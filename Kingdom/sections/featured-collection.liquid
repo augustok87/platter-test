@@ -1,0 +1,142 @@
+<div class="content-section full-width-section-content gutter--on featured-collection">
+
+  <div class="featured-collection__header rte">
+  
+    <div class="remove-end-margin" style="flex: 1; padding-inline-end: 10%;">
+
+      {%- unless section.settings.title == blank -%}
+        <{{ section.settings.seo_h_tag }} class="featured-collection__title h1">{{ section.settings.title | escape }}</{{ section.settings.seo_h_tag }}>
+      {%- endunless -%}
+      
+    </div>
+
+    {%- if section.settings.show_view_all -%}
+      <span><a href="{{ collections[section.settings.collection].url }}">{{ 'collections.view_all_products' | t }}</a></span>
+    {%- endif -%}
+
+  </div>
+
+  <div class="featured-collection__content">
+
+    <{%- if section.settings.layout contains 'slider' -%}
+      css-slider data-options='{
+        "selector": ".product-item",
+        "navigation": false,
+        "groupCells": true
+      }'
+      style="display:flex"
+      {%- else -%}
+        div
+      {% endif %}
+      class="collection collection--{{ settings.grid_style }} collection--{{ section.settings.layout }} css-slider--simple-dots" 
+      {% if section.settings.products_number < 5 %} data-limit="{{ section.settings.products_number }}" {% endif %}
+    >
+
+      {%- liquid
+        if section.settings.collection != blank
+          for product in collections[section.settings.collection].products limit: section.settings.products_number
+            if section.index == 1 and forloop.index <= 4
+              assign preload = true
+            else
+              assign preload = false
+            endif
+            render 'product-item', product: product, product_collection: collections[section.settings.collection], index: forloop.index, preload: preload
+          endfor
+        else 
+          for i in (1..section.settings.products_number)
+            render 'product-item', blank_product: true, index: forloop.index
+          endfor
+        endif
+      -%}
+
+    </{% if section.settings.layout contains 'slider' %}css-slider{% else %}div{% endif %}>
+  
+  </div>
+
+</div>
+
+{% schema %}
+  {
+    "name": "t:sections.featured-collection.name",
+    "class": "overflow-hidden mount-css-slider with-gutter",
+    "settings": [
+      {
+        "type": "text",
+        "id": "title",
+        "label": "t:sections.featured-collection.settings.title.label",
+        "default": "Featured collection"
+      },
+      {
+        "type": "checkbox",
+        "id": "show_view_all",
+        "label": "t:sections.featured-collection.settings.show_view_all.label",
+        "default": true
+      },
+      {
+        "type": "select",
+        "id": "layout",
+        "label": "t:sections.featured-collection.settings.layout.label",
+        "options": [
+          {
+            "label": "t:sections.featured-collection.settings.layout.options__1.label",
+            "value": "slider"
+          },
+          {
+            "label": "t:sections.featured-collection.settings.layout.options__2.label",
+            "value": "grid"
+          }
+        ],
+        "default": "grid"
+      },
+      {
+        "type": "range",
+        "id": "products_number",
+        "label": "t:sections.featured-collection.settings.products_number.label",
+        "min": 4,
+        "max": 24,
+        "step": 1,
+        "default": 12
+      },
+      {
+        "type": "collection",
+        "id": "collection",
+        "label": "t:sections.featured-collection.settings.collection.label"
+      },
+      {
+        "type": "select",
+        "id": "seo_h_tag",
+        "label": "t:sections.refactor_words.seo.label",
+        "info": "t:sections.refactor_words.seo.info",
+        "options": [
+          {
+            "value": "h1",
+            "label": "H1"
+          },
+          {
+            "value": "h2",
+            "label": "H2"
+          },
+          {
+            "value": "h3",
+            "label": "H3"
+          },
+          {
+            "value": "h4",
+            "label": "H4"
+          },
+          {
+            "value": "span",
+            "label": "span"
+          }
+        ],
+        "default": "h2"
+      }
+    ],
+    "presets": [{
+      "name": "t:sections.featured-collection.presets.name"
+    }],
+    "disabled_on": {
+      "templates": ["password"]
+    }
+  }
+{% endschema %}

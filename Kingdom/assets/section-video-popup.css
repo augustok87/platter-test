@@ -1,0 +1,109 @@
+.video-popup__link {
+  overflow: hidden;
+}
+.video-popup__link .lazy-image--background {
+  -webkit-backface-visibility: hidden;
+  transform: scale(1);
+  overflow: hidden;
+  transition: background 200ms linear, transform 300ms linear;
+}
+.no-touchevents .video-popup__link:hover .lazy-image--background, .focus .video-popup__link .lazy-image--background {
+  transform: scale(1.1);
+}
+
+video-popup {
+  display: block;
+  position: relative;
+}
+video-popup.gutter--on {
+  width: calc(100% - var(--horizontal-padding) * 2);
+  left: var(--horizontal-padding);
+}
+
+.video-popup__container {
+  height: 0;
+  padding-top: 56.25%;
+  position: relative;
+}
+
+.video-popup__link {
+  position: absolute;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  display: flex;
+  align-items: flex-end;
+  cursor: pointer;
+  overflow: hidden;
+  color: rgba(var(--color-body-txt), 1);
+  padding: var(--horizontal-padding);
+}
+.video-popup__link svg path {
+  fill: rgba(var(--color-body-txt), 1);
+}
+.video-popup__link svg {
+  transition: all 100ms linear;
+}
+.video-popup__link:hover svg {
+  transform: scale(1.05);
+}
+
+.video-popup__title {
+  margin-bottom: 0.6em;
+}
+@media screen and (max-width: 648px) {
+  .video-popup__title {
+    margin-bottom: 0;
+  }
+}
+
+.video-popup__play {
+  display: block;
+  position: absolute;
+  top: 50%;
+  left: 50%;
+  width: 100px;
+  height: 100px;
+  transform: translate3d(-50%, -50%, 0);
+}
+.video-popup__play svg {
+  width: 100% !important;
+  height: 100% !important;
+}
+
+.video-popup__background {
+  z-index: -1;
+}
+.video-popup__background:before {
+  position: absolute;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  content: "";
+  opacity: 0.36;
+  z-index: 9;
+}
+
+.video-popup__iframe {
+  position: absolute;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  z-index: 99;
+}
+
+.video-popup__blackout {
+  position: absolute;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  transition: all 100ms linear;
+  pointer-events: none;
+  opacity: 0;
+  background: #000;
+  z-index: 90;
+}

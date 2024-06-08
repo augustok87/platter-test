@@ -1,0 +1,62 @@
+{% assign atc_product = all_products[block.settings.product] %}
+{% assign atc_variant = atc_product.first_available_variant %}
+
+{%- if atc_variant != blank -%}
+<style>
+  .add-to-cart-button__container {
+    width: 150px;
+  }
+
+  .add-to-cart-button__container .button {
+    padding: 0;
+    position: inherit;
+    height: 55px;
+    width: 100%;
+  }
+
+  [data-block-id="{{ block.id }}"] .quick-add-to-cart {
+    position: inherit;
+    transform: none;
+  }
+
+  [data-block-id="{{ block.id }}"] .quick-add-to-cart-button .button {
+    color: {{ block.settings.button_text_color }};
+    background-color: {{ block.settings.button_color }};
+  }
+
+  [data-block-id="{{ block.id }}"] .quick-add-to-cart-button .button .add-to-cart__text {
+    color: {{ block.settings.button_text_color }};
+  }
+
+  @media screen and (max-width: 768px) {
+    .add-to-cart-button__container .button {
+      border-radius: 0;
+      height: auto;
+    }
+
+    .add-to-cart-button__container .button .add-to-cart__text {
+      display: block;
+    }
+  }
+
+</style>
+
+<div class="add-to-cart-button__container" data-js-product-item data-block-id="{{ block.id }}">
+  <quick-add-to-cart class="quick-add-to-cart">
+    <product-form {% if settings.cart_action == 'overlay' %} data-ajax-cart {% endif %}>
+      <div class="quick-add-to-cart-button">
+        {%- form 'product', atc_product -%}
+          <input type="hidden" name="id" value="{{ atc_variant.id }}">
+          <button type="submit" name="add" class="button video-text__button" data-js-product-add-to-cart>
+            <span class="add-to-cart__text" data-js-product-add-to-cart-text>
+              {{ 'products.grid.quick_buy' | t }}
+            </span>
+            <span class="add-to-cart__preloader" aria-hidden="true"></span>
+          </button>
+        {%- endform -%}
+      </div>
+    </product-form>
+  </quick-add-to-cart>
+</div>
+
+{% endif %}

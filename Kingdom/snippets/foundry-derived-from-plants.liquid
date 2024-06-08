@@ -1,0 +1,33 @@
+{% assign natural_origin_entry = product.metafields.bluatlas.natural_origin_percentage.value %}
+{% if natural_origin_entry %}
+  <style>
+    .derived-from__container { 
+      display: flex; 
+      align-items: center; 
+      margin: 18px 0 20px; 
+      font-size: 14px; 
+    }
+    .derived-from__icon { 
+      width: 55px; 
+      height: 55px; 
+      margin-right: 16px; 
+    }
+    .derived-from__text {
+      margin: 0;
+    }
+    @media screen and (max-width: 600px) { 
+      .derived-from__icon { 
+        width: 30px; 
+        height: 30px; 
+        margin-right: 10px;
+      } 
+    }
+  </style>
+  <div class="derived-from__container">
+    <img class="derived-from__icon" src="{{ natural_origin_entry.icon |  image_url  }}"/>
+    <p class="derived-from__text">{{ natural_origin_entry.text }}</p>
+  </div>
+{% endif %}
+  
+
+    

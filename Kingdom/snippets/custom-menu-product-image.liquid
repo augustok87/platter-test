@@ -1,0 +1,13 @@
+<style>
+.menu-product-image {
+		display: block;
+}
+.menu-product-image img {
+  max-width: 44px;
+  margin-right: 10px;
+}
+</style>
+
+{% if childlink.type contains 'product_link' %}
+  <span class="menu-product-image">{{ childlink.object.metafields.product.display_image | img_url | img_tag }}</span>
+{% endif %}

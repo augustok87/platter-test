@@ -1,0 +1,190 @@
+<style>
+  .featured-logos__container {
+    display: flex;
+    flex-direction: row;
+    justify-content: space-around; /* This will evenly space out the logos */
+    align-items: center;
+    text-align: center;
+    margin: auto 10px;
+    padding: 2em 0;
+    position: relative;
+  }
+
+  .featured-logos__container .logo-image {
+    max-width: 120px;
+    width: 100%;
+    max-height: 52px;
+  }
+
+  .featured-logos__container .logo-text {
+    padding: 0 2px;
+    text-transform: uppercase;
+  }
+
+  .featured-logos__container .logo-slide {
+    display: block; /* Display block on desktop, but will be overridden in mobile CSS */
+    width: 183px; /* Adjust width to 183 pixels */
+  }
+
+  .featured-logos__container .prevArrow, .featured-logos__container .nextArrow {
+    display: none;
+  }
+
+  @media screen and (max-width: 700px) {
+    .featured-logos__container {
+      flex-direction: column; /* Stacks the slides vertically if needed */
+      overflow: hidden; /* Prevents overflow from slides transitioning */
+      padding: 0;
+      min-height: 170px;
+    }
+
+    .featured-logos__container .logo-slide {
+      width: 100%; /* Set to full width on mobile */
+      display: none; /* Updated by JavaScript */
+    }
+
+    .featured-logos__container .logo-slide:first-child {
+      display: block;
+    }
+
+    .featured-logos__container .prevArrow,
+    .featured-logos__container .nextArrow {
+      display: block;
+      cursor: pointer;
+      position: absolute;
+      top: 50%;
+      transform: translateY(-50%);
+      color: #000;
+      font-weight: bold;
+      font-size: 26px;
+      transition: 0.6s ease;
+      z-index: 10;
+    }
+
+    .featured-logos__container .prevArrow {
+      left: 5px;
+    }
+
+    .featured-logos__container .nextArrow {
+      right: 5px;
+    }
+  }
+</style>
+
+
+<div class="featured-logos__container">
+  {% for block in section.blocks %}
+    {% if block.type == "media_mention" %}
+      <div class="logo-slide">
+        <p class="logo-text">{{ block.settings.logo_text }}</p>
+        <img
+          class="logo-image"
+          src="{{ block.settings.logo.src | img_url }}"
+          alt="{{ block.settings.logo.src.alt }}">
+      </div>
+    {% endif %}
+
+    {% if block.type == "ratings" %}
+      <div class="logo-slide">
+        <img
+          class="logo-image"
+          src="{{ block.settings.star_ratings.src | img_url }}"
+          alt="{{ block.settings.star_ratings.src.alt }}">
+        <p class="logo-text">{{ block.settings.ratings_text }}</p>
+      </div>
+    {% endif %}
+  {% endfor %}
+  <a class="prevArrow">&#10094;</a>
+  <a class="nextArrow">&#10095;</a>
+</div>
+
+<script type="module">
+  document.addEventListener('DOMContentLoaded', function() {
+    const slideElements = document.querySelectorAll(".featured-logos__container .logo-slide");
+    const prevArrow = document.querySelector('.featured-logos__container .prevArrow');
+    const nextArrow = document.querySelector('.featured-logos__container .nextArrow');
+    let currentSlideIndex = 0;
+
+    /* Shows whatever slide is at `currentSlideIndex` */
+    const showSlide = () => {
+      slideElements.forEach((slide, index) => {
+        let display = 'none'
+        if(index === currentSlideIndex) {
+          display = 'block'
+        }
+        slide.style.display = display;
+      });
+    }
+
+    /*
+    @param increment {Integer}
+    */
+    function changeSlide(increment) {
+      currentSlideIndex = calculateCurrentSlideIndex(increment);
+      showSlide()
+    }
+
+    function calculateCurrentSlideIndex(increment) {
+      const newIndex = currentSlideIndex + increment;
+      if (newIndex < 0) return slideElements.length - 1;
+      if (newIndex >= slideElements.length ) return 0;
+
+      return newIndex;
+    }
+
+    prevArrow.addEventListener('click', () => changeSlide(-1));
+    nextArrow.addEventListener('click', () => changeSlide(1));
+  });
+</script>
+
+
+{% schema %}
+  {
+    "name": "Featured Logos",
+    "class": "featured-logos",
+    "settings": [],
+    "blocks": [
+      {
+        "name": "Media Mention",
+        "type": "media_mention",
+        "settings": [
+          {
+            "type": "image_picker",
+            "id": "logo",
+            "label": "Logo",
+            "info": "Select the image for the logo"
+          }, {
+            "type": "textarea",
+            "id": "logo_text",
+            "label": "Media Review",
+            "info": "Input the text to be displayed alongside the logo"
+          }
+        ]
+      }, {
+        "name": "Ratings",
+        "type": "ratings",
+        "settings": [
+          {
+            "type": "image_picker",
+            "id": "star_ratings",
+            "label": "Star Ratings",
+            "info": "Select the image of the star ratings to be displayed"
+          }, {
+            "type": "text",
+            "id": "ratings_text",
+            "label": "Ratings Text",
+            "info": "Input the text to be displayed below the star ratings here"
+          }
+        ]
+      }
+    ],
+    "presets": [
+      {
+        "name": "Featured Logos"
+      }
+    ],
+    "enabled_on": {
+      "templates": ["*"]
+    }
+  }
+{% endschema %}

@@ -1,0 +1,116 @@
+{%- if predictive_search.performed -%}
+
+  <div class="sidebar__search-link">
+  	<a tabindex="-1" class="search-more button button--solid" href="{{ routes.search_url }}?q={{ predictive_search.terms }}">{{ 'search.form.search_for_html' | t: terms: predictive_search.terms }}</a>
+  </div>
+
+	<div class="sidebar__search-results">
+
+    {%- if predictive_search.resources.queries.size > 0 -%}
+			{%- for query in predictive_search.resources.queries -%}
+				<a class="search-item first" href="{{ query.url }}" data-js-search-item tabindex="-1" style="padding:{% if forloop.first %}25px 0 10px{% else %}10px 0{% endif %}"><span class="underline-animation">{{ query.styled_text }}</span></a>
+			{%- endfor -%}
+			{%- capture products_results_title -%}
+				<span class="search-title">{{ 'search.form.product_results_title' | t }}</span>
+			{%- endcapture -%}
+    {%- endif -%}
+
+		{%- if predictive_search.resources.products.size > 0 -%}
+			{{ products_results_title }}
+			{%- for product in predictive_search.resources.products -%}
+				<a 
+					class="search-item {% if forloop.first %} first {% endif %}" 
+					href="{{ product.url }}" title="{{ product.title }}"
+					data-js-search-item tabindex="-1"
+				>
+					<div class="thumbnail">
+						{%- render 'lazy-image-small', image: product.featured_media -%}
+					</div>
+					<div class="content">
+						<span class="title underline-animation">{{ product.title | escape }}</span>
+						<span class="caption">
+							{%- if settings.predictive_search_show_vendor -%}
+								<span class="vendor">{{ product.vendor }}</span>
+							{%- endif -%}
+							{%- if settings.predictive_search_show_price -%}
+								{%- assign variant = product.selected_or_first_available_variant -%}
+								<span class="price">
+									<span class="visually-hidden">{{ 'general.accessibility_labels.price.regular' | t }}</span>
+									{{ variant.price | money }}
+      						{%- if variant.compare_at_price > variant.price -%}
+      							<span class="visually-hidden">{{ 'general.accessibility_labels.price.sale' | t }}</span>
+      							<span class="st">{{ variant.compare_at_price | money }}</span>
+      						{%- endif -%}
+      					</span>
+							{%- endif -%}
+						</span>
+					</div>
+				</a>
+			{%- endfor -%}
+		{%- endif -%}
+
+		{%- if predictive_search.resources.collections.size > 0 -%}
+			<span class="search-title">{{ 'search.form.collection_results_title' | t }}</span>
+			{%- for collection in predictive_search.resources.collections -%}
+				<a 
+					href="{{ collection.url }}" tabindex="-1" 
+					class="search-item {% if forloop.first %} first {% endif %} {% unless collection.featured_image %} article {% endunless %}"
+					data-js-search-item 
+				>
+					{%- if collection.featured_image != blank -%}
+						<div class="thumbnail">
+							{%- render 'lazy-image-small', image: collection.featured_image -%}
+						</div>
+					{%- endif -%}
+					<div class="content">
+						<span class="title underline-animation">{{ collection.title | escape }}</span>
+					</div>
+				</a>
+			{%- endfor -%}
+		{%- endif -%}
+
+		{%- if settings.predictive_search_include_articles and predictive_search.resources.articles.size > 0 -%}
+			{%- assign date_format = 'general.date_format.month_day_year' | t -%}
+			<span class="search-title">{{ 'search.form.article_results_title' | t }}</span>
+			{%- for article in predictive_search.resources.articles -%}
+				<a 
+					href="{{ article.url }}" tabindex="-1" 
+					class="search-item {% if forloop.first %} first {% endif %} {% unless article.image %} article {% endunless %}"
+					data-js-search-item 
+				>
+					{%- if article.image != blank -%}
+						<div class="thumbnail">
+							{%- render 'lazy-image-small', image: article.image -%}
+						</div>
+					{%- endif -%}
+					<div class="content">
+						<span class="title underline-animation">{{ article.title | escape }}</span>
+						<span class="caption">
+							<span class="vendor" style="opacity:.66">{{ article.published_at | date: date_format }}</span>
+						</span>
+					</div>
+				</a>
+			{%- endfor -%}
+		{%- endif -%}
+
+		{%- if settings.predictive_search_include_pages and predictive_search.resources.pages.size > 0 -%}
+			<span class="search-title">{{ 'search.form.page_results_title' | t }}</span>
+			{%- for page in predictive_search.resources.pages -%}
+				<a 
+					class="search-item article {% if forloop.first %} first {% endif %}" 
+					href="{{ page.url }}" tabindex="-1"
+					data-js-search-item 
+				>
+					<div class="content">
+						<span class="title underline-animation">{{ page.title | escape }}</span>
+						{%- if page.body != blank -%}
+							<span class="caption"><span class="vendor">{{ page.body | strip_html | truncatewords: 12, "..." }}</span></span>
+						{%- endif -%}
+					</div>
+				</a>
+			{%- endfor -%}
+		{%- endif -%}
+
+	</div>
+
+{%- endif -%}

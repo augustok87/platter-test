@@ -1,0 +1,132 @@
+
+{{ 'section-popup.css' | asset_url | stylesheet_tag }}
+
+<modal-box id="modal-{{ section.id }}" class="popup" 
+  data-options='{
+    "show": {{ section.settings.newsletter_auto }},
+    "frequency": "{{ section.settings.newsletter_frequent }}",
+    "enabled": {{ section.settings.popup_enable }}
+  }'
+  style="display:none"
+>
+
+  <div class="popup-content">
+
+    {%- if section.settings.image -%}
+      <div class="popup-image" aria-hidden="true">
+        <figure class="lazy-image lazy-image--background lazy-preloader">
+          <img
+            src="{{ section.settings.image | image_url: width: 620, height: 200, crop: 'center' }}" alt="{{ section.settings.image.alt | escape }}"
+            srcset="{{ section.settings.image | image_url: width: 620, height: 200, crop: 'center' }} 620w, {{ section.settings.image | image_url: width: 1240, height: 400, crop: 'center' }}, 1240w"
+            loading="lazy" 
+            sizes="620px"
+            width="620" height="200"
+            onload="this.classList.add('lazyloaded')"
+          />
+        </figure>
+      </div>
+    {%- endif -%}
+
+    <div class="popup-text" data-content>
+
+        {%- unless section.settings.title == blank -%}
+          <span class="h1 popup-title">{{ section.settings.title | escape }}</span>
+        {%- endunless -%}
+
+        {%- unless section.settings.content == blank -%}
+          <div class="newsletter__text body-text-sm rte">{{ section.settings.content }}</div>
+        {%- endunless -%}
+
+        {%- liquid
+          if section.settings.newsletter_enable
+            assign form_id = 'newsletter-form-' | append: section.id
+            render 'newsletter-form', id: form_id, class: 'popup-form'
+          endif
+        -%}
+
+    </div>
+
+    <button class="popup-close" aria-label="{{ 'general.accessibility_labels.close' | t }}" data-js-close>
+      {%- render 'theme-symbols', icon: 'close' -%}
+    </button>
+
+  </div>
+
+  <div class="popup-background" data-js-close></div>
+
+</modal-box>
+
+<script src="{{ 'component-modal.js' | asset_url }}" defer></script>
+
+{% schema %}
+  {
+    "name": "t:sections.popup.name",
+    "class": "mount-popup",
+    "settings": [
+      {
+        "type": "text",
+        "id": "title",
+        "label": "t:sections.popup.settings.title.label",
+        "default": "Popup"
+      },
+      {
+        "type": "richtext",
+        "id": "content",
+        "label": "t:sections.popup.settings.content.label",
+        "default": "<p>Stay up to date on the latest product releases, special offers & news by signing up for our newsletter.</p><p>Read our <a href='#'>privacy policy</a>.</p>"
+      },
+      {
+        "type": "checkbox",
+        "id": "newsletter_enable",
+        "label": "t:sections.popup.settings.show_newsletter.label",
+        "default": true
+      },
+      {
+        "type": "header",
+        "content": "t:sections.popup.settings.functionality.content"
+      },
+      {
+        "type": "checkbox",
+        "id": "popup_enable",
+        "label": "t:sections.popup.settings.enable.label",
+        "default": false
+      },
+      {
+        "type": "range",
+        "id": "newsletter_auto",
+        "label": "t:sections.popup.settings.show_after.label",
+        "min": 5,
+        "max": 60,
+        "step": 5,
+        "unit": "t:sections.popup.settings.show_after.info",
+        "default": 10
+      },
+      {
+        "type": "select",
+        "id": "newsletter_frequent",
+        "label": "t:sections.popup.settings.frequency.label",
+        "options": [
+          {
+            "value": "day",
+            "label": "t:sections.popup.settings.frequency.options__1.label"
+          },
+          {
+            "value": "week",
+            "label": "t:sections.popup.settings.frequency.options__2.label"
+          },
+          {
+            "value": "once",
+            "label": "t:sections.popup.settings.frequency.options__3.label"
+          }
+        ],
+        "default": "week"
+      },
+      {
+        "type": "image_picker",
+        "id": "image",
+        "label": "t:sections.popup.settings.image.label",
+        "info": "t:sections.popup.settings.image.info"
+      }
+    ]
+  }
+{% endschema %}

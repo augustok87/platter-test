@@ -1,0 +1,333 @@
+{{ 'section-image-with-text.css' | asset_url | stylesheet_tag }}
+<style>
+  #shopify-section-{{ section.id }} {
+    --image-text-height: {{ section.settings.image_height }};
+    --text-max-width: {{ section.settings.text_width }};
+    --mobile-image-text-height: {{ section.settings.mobile_image_height }};
+  }
+
+  #shopify-section-{{ section.id }} .image-text {
+    height: var(--image-text-height);
+  }
+
+  #shopify-section-{{ section.id }} .image-text__content > div {
+    max-width: var(--text-max-width);
+  }
+
+  @media only screen and (max-width: 768px) {
+    #shopify-section-{{ section.id }} .image-text__container {
+      height: var(--mobile-image-text-height);
+    }
+  }
+</style>
+
+<div class="content-section full-width-section-content gutter--{% if section.settings.gutter_enabled %}on{% else %}off{% endif %} image-text image-text--size-{{ section.blocks.size }}">
+
+  {%- for block in section.blocks -%}
+
+    {%- if block.type == 'image' -%}
+
+      <div class="image-text__container block-{{ block.id }}" {{ block.shopify_attributes }} style="color: {{ block.settings.color_text }};">
+        <div class="image-text__content aligned-text-content {{ block.settings.image_text_alignment }}">
+          <div>
+            <h3 class="image-text__title {% if section.settings.text_size == 'regular' %} h1 {% elsif section.settings.text_size == 'large' %} h0 {% else %} hh {% endif %}"><span>{{ block.settings.title | escape }}</span></h3>
+            {%- unless block.settings.body == blank -%}
+              <div class="image-text__body rte">{{ block.settings.body }}</div>
+            {%- endunless -%}
+            {%- unless block.settings.button_label == blank -%} 
+              <a class="button button--solid" {% unless block.settings.url == blank %} href="{{ block.settings.url | escape }} {% endunless %}" title="{{ block.settings.button_label | escape }}">{{ block.settings.button_label | escape }}</a>
+            {%- endunless -%}
+          </div>
+        </div>
+        <div class="image-text__background">
+          {%- unless block.settings.image == blank -%}
+            {% render 'lazy-image', image: block.settings.image, type: 'background', alt: block.settings.title %}
+          {%- else -%}
+            <span class="onboarding-svg onboarding-background">{{ 'image' | placeholder_svg_tag }}</span>
+          {%- endunless -%}
+        </div>
+      </div>
+
+    {%- elsif block.type == 'background_with_text' -%}
+      <div class="image-text__container block-{{ block.id }}" {{ block.shopify_attributes }} style="color: {{ block.settings.background_color_text }}; background-color: {{ block.settings.background_color }};">
+        <div class="image-text__content aligned-text-content {{ block.settings.background_text_alignment }}">
+          <div>
+            {%- unless block.settings.title == blank -%}
+              <h3 class="image-text__title {% if section.settings.text_size == 'regular' %} h1 {% elsif section.settings.text_size == 'large' %} h0 {% else %} hh {% endif %}"><span>{{ block.settings.title | escape }}</span></h3>
+            {%- endunless -%}
+            {%- unless block.settings.body == blank -%}
+              <div class="image-text__body">{{ block.settings.body }}</div>
+            {%- endunless -%}
+          </div>
+        </div>
+      </div>
+    {%- endif -%}
+
+  {%- endfor -%}
+  
+</div>
+
+
+{% schema %}
+  {
+    "name": "Image and Background",
+    "max_blocks": 3,
+    "blocks": [
+      {
+        "type": "image",
+        "name": "t:sections.image-with-text.blocks.image.name",
+        "settings": [
+          {
+            "type": "text",
+            "id": "title",
+            "label": "t:sections.image-with-text.blocks.image.settings.title.label",
+            "default": "Image with text"
+          },
+          {
+            "type": "richtext",
+            "id": "body",
+            "label": "t:sections.image-with-text.blocks.image.settings.body.label",
+            "default": "<p>Share your latest products, collections or promotions!</p>"
+          },
+          {
+            "type": "text",
+            "id": "button_label",
+            "label": "t:sections.image-with-text.blocks.image.settings.button_label.label"
+          },
+          {
+            "type": "url",
+            "id": "url",
+            "label": "t:sections.image-with-text.blocks.image.settings.url.label",
+            "info": "t:sections.image-with-text.blocks.image.settings.url.info"
+          },
+          {
+            "type": "image_picker",
+            "id": "image",
+            "label": "t:sections.image-with-text.blocks.image.settings.image.label"
+          },
+          {
+            "type": "select",
+            "id": "image_text_alignment",
+            "label": "Text Alignment",
+            "options": [
+              {
+                "value": "horizontal-left vertical-top",
+                "label": "Top Left"
+              },
+              {
+                "value": "horizontal-center vertical-top",
+                "label": "Top Center"
+              },
+              {
+                "value": "horizontal-right vertical-top",
+                "label": "Top Right"
+              },
+              {
+                "value": "horizontal-left vertical-middle",
+                "label": "Middle Left"
+              },
+              {
+                "value": "horizontal-center vertical-middle",
+                "label": "Center"
+              },
+              {
+                "value": "horizontal-right vertical-middle",
+                "label": "Middle Right"
+              },
+              {
+                "value": "horizontal-left vertical-bottom",
+                "label": "Bottom Left"
+              },
+              {
+                "value": "horizontal-center vertical-bottom",
+                "label": "Bottom Center"
+              },
+              {
+                "value": "horizontal-right vertical-bottom",
+                "label": "Bottom Right"
+              }
+            ],
+            "default": "horizontal-left vertical-bottom"
+          },
+          {
+            "type": "color",
+            "id": "color_text",
+            "label": "Text Color",
+            "default": "#000000"
+          }
+        ]
+      },
+      {
+        "type": "background_with_text",
+        "name": "Background with Text",
+        "settings": [
+          {
+            "type": "text",
+            "id": "title",
+            "label": "Title",
+            "default": "Background with text"
+          },
+          {
+            "type": "richtext",
+            "id": "body",
+            "label": "Text",
+            "default": "<p>Your text here</p>"
+          },
+          {
+            "type": "color",
+            "id": "background_color",
+            "label": "Background Color",
+            "default": "#000000"
+          },
+          {
+            "type": "color",
+            "id": "background_color_text",
+            "label": "Text Color",
+            "default": "#000000"
+          },
+          {
+            "type": "select",
+            "id": "background_text_alignment",
+            "label": "Text Alignment",
+            "options": [
+              {
+                "value": "horizontal-left vertical-top",
+                "label": "Top Left"
+              },
+              {
+                "value": "horizontal-center vertical-top",
+                "label": "Top Center"
+              },
+              {
+                "value": "horizontal-right vertical-top",
+                "label": "Top Right"
+              },
+              {
+                "value": "horizontal-left vertical-middle",
+                "label": "Middle Left"
+              },
+              {
+                "value": "horizontal-center vertical-middle",
+                "label": "Center"
+              },
+              {
+                "value": "horizontal-right vertical-middle",
+                "label": "Middle Right"
+              },
+              {
+                "value": "horizontal-left vertical-bottom",
+                "label": "Bottom Left"
+              },
+              {
+                "value": "horizontal-center vertical-bottom",
+                "label": "Bottom Center"
+              },
+              {
+                "value": "horizontal-right vertical-bottom",
+                "label": "Bottom Right"
+              }
+            ],
+            "default": "horizontal-left vertical-bottom"
+          }
+        ]
+      }
+    ],
+    "settings": [
+      {
+        "type": "select",
+        "id": "image_height",
+        "label": "Images Height",
+        "options": [
+          {
+            "value": "25vh",
+            "label": "t:sections.image-with-text.settings.image_height.options__1.label"
+          },
+          {
+            "value": "50vh",
+            "label": "t:sections.image-with-text.settings.image_height.options__2.label"
+          },
+          {
+            "value": "75vh",
+            "label": "t:sections.image-with-text.settings.image_height.options__3.label"
+          },
+          {
+            "value": "100vh",
+            "label": "t:sections.image-with-text.settings.image_height.options__4.label"
+          }
+        ],
+        "default": "50vh"
+      },
+      {
+        "type": "select",
+        "id": "mobile_image_height",
+        "label": "Mobile Images Height",
+        "options": [
+          {
+            "value": "20vh",
+            "label": "t:sections.image-with-text.settings.image_height.options__1.label"
+          },
+          {
+            "value": "35vh",
+            "label": "t:sections.image-with-text.settings.image_height.options__2.label"
+          },
+          {
+            "value": "50vh",
+            "label": "t:sections.image-with-text.settings.image_height.options__3.label"
+          }
+        ],
+        "default": "35vh"
+      },
+      {
+        "type": "select",
+        "id": "text_width",
+        "label": "t:sections.image-with-text.settings.text_width.label",
+        "options": [
+          {
+            "value": "50%",
+            "label": "t:sections.image-with-text.settings.text_width.options__1.label"
+          },
+          {
+            "value": "75%",
+            "label": "t:sections.image-with-text.settings.text_width.options__2.label"
+          },
+          {
+            "value": "100%",
+            "label": "t:sections.image-with-text.settings.text_width.options__3.label"
+          }
+        ],
+        "default": "50%"
+      },
+      {
+        "type": "select",
+        "id": "text_size",
+        "label": "t:sections.image-with-text.settings.text_size.label",
+        "options": [
+          {
+            "value": "regular",
+            "label": "t:sections.image-with-text.settings.text_size.options__1.label"
+          },
+          {
+            "value": "large",
+            "label": "t:sections.image-with-text.settings.text_size.options__2.label"
+          },
+          {
+            "value": "huge",
+            "label": "t:sections.image-with-text.settings.text_size.options__3.label"
+          }
+        ],
+        "default": "regular"
+      },
+      {
+        "type": "checkbox",
+        "id": "gutter_enabled",
+        "label": "t:sections.custom-gutter.gutter_enabled.label"
+      }
+    ], 
+    "presets": [{
+      "name": "Image and Background",
+      "blocks": [{
+        "type": "image"
+      }]
+    }]
+  }
+{% endschema %}

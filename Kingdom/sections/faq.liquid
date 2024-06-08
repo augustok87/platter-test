@@ -1,0 +1,113 @@
+<div class="content-section gutter--on">
+
+  {%- unless section.settings.title == blank -%}
+    <{{ section.settings.seo_h_tag }} class="h1">{{ section.settings.title | escape }}</{{ section.settings.seo_h_tag }}>
+  {%- endunless -%}
+
+  <div class="toggles">
+
+  	{%- for block in section.blocks -%}
+
+      <toggle-tab class="toggle {% if forloop.first and section.settings.open_first %} opened {% endif %}" {{ block.shopify_attributes }}>
+        <span class="toggle__title body-text-lg" data-js-title>{{ block.settings.title | escape }}</span>
+        <div class="toggle__content" {% if forloop.first and section.settings.open_first %} style="display: block;" {% endif %} data-js-content>
+          {%- liquid
+            echo block.settings.body
+            unless block.settings.image == blank
+              assign sizes = 'sizes="(max-width: 948px) calc(100vw - 20px), calc((100vw - 200px) / 1.2)"'
+              render 'lazy-image', image: block.settings.image, type: 'image', sizes: sizes
+            endunless
+          -%}
+        </div>
+      </toggle-tab>
+
+  	{%- endfor -%}
+
+    <script src="{{ 'component-toggle.js' | asset_url }}" defer></script>
+
+  </div>
+
+</div>
+
+{% schema %}
+	{
+    "name": "t:sections.faq.name",
+    "class": "faq centered-section-content with-gutter",
+    "tag": "section",
+		"settings": [
+      {
+        "type": "text",
+        "id": "title",
+        "label": "t:sections.faq.settings.title.label",
+        "default": "Frequently asked questions"
+      },
+			{
+				"type": "checkbox",
+				"id": "open_first",
+				"label": "t:sections.faq.settings.open_first.label"
+			},
+      {
+        "type": "select",
+        "id": "seo_h_tag",
+        "label": "t:sections.refactor_words.seo.label",
+        "info": "t:sections.refactor_words.seo.info",
+        "options": [
+          {
+            "value": "h1",
+            "label": "H1"
+          },
+          {
+            "value": "h2",
+            "label": "H2"
+          },
+          {
+            "value": "h3",
+            "label": "H3"
+          },
+          {
+            "value": "h4",
+            "label": "H4"
+          },
+          {
+            "value": "span",
+            "label": "span"
+          }
+        ],
+        "default": "h2"
+      }
+		],
+		"blocks": [
+      {
+        "type": "text",
+        "name": "t:sections.faq.blocks.text.name",
+        "settings": [
+          {
+            "type": "text",
+            "id": "title",
+            "label": "t:sections.faq.blocks.text.settings.title.label",
+            "default": "Question title"
+          },
+          {
+            "type": "richtext",
+            "id": "body",
+            "label": "t:sections.faq.blocks.text.settings.text.label",
+            "default": "<p>Write a complete answer to the most frequent questions that your customers might have, such as important product information, shipping policies, payment issues or returns.</p>"
+          },
+          {
+            "type": "image_picker",
+            "id": "image",
+            "label": "t:sections.faq.blocks.text.settings.image.label"
+          }
+        ]
+      }
+    ],
+    "presets": [{
+      "name": "t:sections.faq.presets.name",
+      "blocks": [
+        {"type":"text"},
+        {"type":"text"},
+        {"type":"text"}
+      ]
+    }]
+  }
+{% endschema %}

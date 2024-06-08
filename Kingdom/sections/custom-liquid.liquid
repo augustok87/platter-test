@@ -1,0 +1,37 @@
+<div id="custom-{{ section.id }}" class="{% if section.settings.gutter_enabled %}content-section full-width-section-content gutter--on{% endif %}">
+  <script class="gutter-script">
+    {%- if section.settings.gutter_enabled -%}
+      document.getElementById('custom-{{ section.id }}').parentElement.classList.add('with-gutter');
+    {%- endif -%}
+  </script>
+  {{ section.settings.custom_liquid }}
+</div>
+
+{% schema %}
+{
+  "name": "t:sections.refactor_words.custom_code.name",
+  "tag": "section",
+  "settings": [
+    {
+      "type": "liquid",
+      "id": "custom_liquid",
+      "label": "t:sections.refactor_words.custom_code.name"
+    },
+    {
+      "type": "header",
+      "content": "t:sections.custom-gutter.heading.content"
+    },
+    {
+      "type": "checkbox",
+      "id": "gutter_enabled",
+      "label": "t:sections.custom-gutter.gutter_enabled.label",
+      "default": true
+    }
+  ],
+  "presets": [
+    {
+      "name": "t:sections.refactor_words.custom_code.name"
+    }
+  ]
+}
+{% endschema %}

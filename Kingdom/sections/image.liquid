@@ -1,0 +1,89 @@
+<div class="content-section full-width-section-content gutter--{% if section.settings.gutter_enabled %}on{% else %}off{% endif %}" id="image-{{ section.id }}">
+
+  <script class="gutter-script">
+    {%- if section.settings.gutter_enabled -%}
+      document.getElementById('image-{{ section.id }}').parentElement.classList.add('with-gutter');
+    {%- else -%}
+      document.getElementById('image-{{ section.id }}').parentElement.classList.add('without-gutter');
+    {%- endif -%}
+  </script>
+
+  {%- if section.settings.link -%}
+    <a href="{{ section.settings.link }}" {% unless section.settings.open_in_new_window == false %} target="_blank" {% endunless %}>
+  {%- endif -%}  
+
+    {%- liquid
+      if section.index == 1
+        assign preload = true
+      else
+        assign preload = false
+      endif
+    -%}
+
+    <div {% if section.settings.mobile_image %} class="hide-on-big-palm" {% endif %}>
+      {%- liquid
+        unless section.settings.image == blank
+          assign sizes = 'sizes="(max-width: 948px) 100vw, calc(100vw - 200px)"'
+          render 'lazy-image', image: section.settings.image, sizes: sizes, preload: preload
+        else
+          echo '<span class="onboarding-svg">'
+            echo 'image' | placeholder_svg_tag
+          echo '</span>'
+        endunless
+      -%}
+    </div>
+
+    {%- if section.settings.mobile_image -%}
+      <div class="show-on-big-palm">
+        {%- render 'lazy-image', image: section.settings.mobile_image, sizes: 'sizes="100vw"', preload: preload -%}
+      </div>
+    {%- endif -%}
+
+  {%- if section.settings.link -%}
+    </a>
+  {%- endif -%}  
+
+</div>
+
+{% schema %}
+  {
+    "name": "t:sections.image.name",
+    "settings": [
+      {
+        "type": "image_picker",
+        "id": "image",
+        "label": "t:sections.image.name"
+      },
+      {
+        "id": "mobile_image",
+        "type": "image_picker",
+        "label": "t:sections.refactor_words.late_edits.image_with_hotspots.image_on_mobile"
+      },
+      {
+        "type": "url",
+        "id": "link",
+        "label": "t:sections.local-extra-words.sections.announcement-bar.blocks.content.settings.link"
+      },
+      {
+        "type": "checkbox",
+        "id": "open_in_new_window",
+        "label": "t:sections.local-extra-words.sections.announcement-bar.blocks.content.settings.target",
+        "default": false
+      },
+      {
+        "type": "header",
+        "content": "t:sections.custom-gutter.heading.content"
+      },
+      {
+        "type": "checkbox",
+        "id": "gutter_enabled",
+        "label": "t:sections.custom-gutter.gutter_enabled.label"
+      }
+    ], 
+    "presets": [
+      {
+        "name": "t:sections.image.name"
+      }
+    ]
+  }
+{% endschema %}
